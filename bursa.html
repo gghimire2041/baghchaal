@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Langur Burja - Traditional Nepali Dice Game</title>
+    <meta name="description" content="Experience the authentic Nepali festival dice game - Langur Burja! Roll dice and bet on symbols in this cultural treasure.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .nepal-flag-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(45deg, #DC143C 0px, #DC143C 20px, transparent 20px, transparent 40px),
+                repeating-linear-gradient(-45deg, #003893 0px, #003893 20px, transparent 20px, transparent 40px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(45deg, #4A90E2, #357ABD);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            z-index: 100;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+        }
+        
+        .game-container {
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .game-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .game-title {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+        
+        .nepali-title {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            font-size: 2.5rem;
+            color: #DC143C;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+            font-weight: 600;
+        }
+        
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
+            to { text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.3); }
+        }
+        
+        .game-subtitle {
+            font-size: 1.3rem;
+            color: #B8860B;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .cultural-info {
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(0, 56, 147, 0.1) 100%);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            color: #E0E0E0;
+            line-height: 1.8;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .balance-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .balance-display {
+            text-align: center;
+        }
+        
+        .balance-label {
+            font-size: 1rem;
+            color: #B8860B;
+            margin-bottom: 0.5rem;
+        }
+        
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        
+        .betting-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1.5rem;
+            max-width: 900px;
+            width: 100%;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #8B4513, #654321);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 4px solid #B8860B;
+        }
+        
+        .symbol-zone {
+            background: linear-gradient(135deg, #F5DEB3, #DDD3B3);
+            border: 4px solid #8B4513;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .symbol-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .symbol-zone:hover::before {
+            left: 100%;
+        }
+        
+        .symbol-zone:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+            border-color: #FFD700;
+        }
+        
+        .symbol-zone.has-bet {
+            border-color: #DC143C;
+            box-shadow: 0 0 30px rgba(220, 20, 60, 0.6);
+            background: linear-gradient(135deg, #FFE4E6, #F0C2C5);
+        }
+        
+        .symbol-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            transition: all 0.3s ease;
+        }
+        
+        .symbol-zone:hover .symbol-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+        
+        .symbol-name-en {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #8B4513;
+            margin-bottom: 0.5rem;
+        }
+        
+        .symbol-name-np {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            font-size: 1.2rem;
+            color: #DC143C;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .bet-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000;
+            background: rgba(255, 215, 0, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 2px solid #B8860B;
+            min-width: 80px;
+        }
+        
+        .dice-area {
+            margin: 3rem 0;
+            text-align: center;
+        }
+        
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .die {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFFFFF, #F0F0F0);
+            border: 3px solid #8B4513;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .die::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+            animation: rotate 2s linear infinite;
+            opacity: 0;
+        }
+        
+        .die.rolling::before {
+            opacity: 1;
+        }
+        
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+        
+        .die.rolling {
+            animation: diceRoll 1s ease-in-out;
+            transform: rotateX(360deg) rotateY(360deg);
+        }
+        
+        @keyframes diceRoll {
+            0% { transform: rotateX(0deg) rotateY(0deg) scale(1); }
+            25% { transform: rotateX(90deg) rotateY(90deg) scale(1.2); }
+            50% { transform: rotateX(180deg) rotateY(180deg) scale(0.8); }
+            75% { transform: rotateX(270deg) rotateY(270deg) scale(1.2); }
+            100% { transform: rotateX(360deg) rotateY(360deg) scale(1); }
+        }
+        
+        .betting-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .bet-button {
+            background: linear-gradient(45deg, #DC143C, #B91C3C);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+            font-size: 1rem;
+        }
+        
+        .bet-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.5);
+        }
+        
+        .roll-button {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border: none;
+            padding: 18px 40px;
+            color: #8B4513;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 1rem;
+        }
+        
+        .roll-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.6);
+        }
+        
+        .roll-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .control-button {
+            background: linear-gradient(45deg, #4A90E2, #357ABD);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+        
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+        }
+        
+        .game-status {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            max-width: 700px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .results-display {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .result-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .result-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            min-width: 120px;
+        }
+        
+        .result-symbol {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        
+        .payout-summary {
+            text-align: center;
+            font-size: 1.3rem;
+            padding: 1rem;
+            background: linear-gradient(45deg, rgba(0, 255, 0, 0.1), rgba(0, 200, 0, 0.1));
+            border-radius: 15px;
+            border: 2px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .win-animation {
+            animation: winCelebration 2s ease-in-out;
+        }
+        
+        @keyframes winCelebration {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1) rotate(2deg); }
+            50% { transform: scale(1.05) rotate(-2deg); }
+            75% { transform: scale(1.1) rotate(1deg); }
+        }
+        
+        .festival-decorations {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .marigold {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #FFA500, #FF8C00);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.5rem;
+            }
+            
+            .nepali-title {
+                font-size: 1.8rem;
+            }
+            
+            .betting-board {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .symbol-zone {
+                min-height: 150px;
+                padding: 1rem;
+            }
+            
+            .symbol-icon {
+                font-size: 3rem;
+            }
+            
+            .die {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+            
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nepal-flag-pattern"></div>
+    <div class="festival-decorations" id="decorations"></div>
+    
+    <button class="back-button" onclick="backToMenu()">← Back to Games</button>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="nepali-title">लंगुर बुर्जा</h1>
+            <h1 class="game-title">Langur Burja</h1>
+            <p class="game-subtitle">"Monkey Crown" - Sacred Festival Dice Game</p>
+        </div>
+        
+        <div class="cultural-info">
+            <strong>🏛️ Ancient Festival Tradition:</strong> Langur Burja, meaning "Monkey Crown," is Nepal's beloved dice game played during Dashain and Tihar festivals. For centuries, families and friends have gathered to roll these sacred dice, each bearing symbols of fortune and fate. This cultural treasure connects generations through the timeless joy of chance and celebration.<br><br>
+            <strong>🎲 How to Play:</strong> Place your bets on the symbols you believe will appear. When 6 dice are rolled, count how many times your chosen symbol appears. Win 2x your bet for 2 matches, 3x for 3 matches, and so on! May the gods of fortune smile upon you!
+        </div>
+        
+        <div class="balance-section">
+            <div class="balance-display">
+                <div class="balance-label">💰 Balance</div>
+                <div class="balance-amount" id="balance">1000</div>
+            </div>
+        </div>
+        
+        <div class="betting-board" id="bettingBoard">
+            <div class="symbol-zone" data-symbol="crown" onclick="placeBet('crown')">
+                <div class="symbol-icon">👑</div>
+                <div class="symbol-name-en">Crown</div>
+                <div class="symbol-name-np">बुर्जा</div>
+                <div class="bet-amount" id="bet-crown">0</div>
+            </div>
+            
+            <div class="symbol-zone" data-symbol="flag" onclick="placeBet('flag')">
+                <div class="symbol-icon">🚩</div>
+                <div class="symbol-name-en">Flag</div>
+                <div class="symbol-name-np">झण्डी</div>
+                <div class="bet-amount" id="bet-flag">0</div>
+            </div>
+            
+            <div class="symbol-zone" data-symbol="heart" onclick="placeBet('heart')">
+                <div class="symbol-icon">♥️</div>
+                <div class="symbol-name-en">Heart</div>
+                <div class="symbol-name-np">पान</div>
+                <div class="bet-amount" id="bet-heart">0</div>
+            </div>
+            
+            <div class="symbol-zone" data-symbol="spade" onclick="placeBet('spade')">
+                <div class="symbol-icon">♠️</div>
+                <div class="symbol-name-en">Spade</div>
+                <div class="symbol-name-np">हुकुम</div>
+                <div class="bet-amount" id="bet-spade">0</div>
+            </div>
+            
+            <div class="symbol-zone" data-symbol="club" onclick="placeBet('club')">
+                <div class="symbol-icon">♣️</div>
+                <div class="symbol-name-en">Club</div>
+                <div class="symbol-name-np">चिडी</div>
+                <div class="bet-amount" id="bet-club">0</div>
+            </div>
+            
+            <div class="symbol-zone" data-symbol="diamond" onclick="placeBet('diamond')">
+                <div class="symbol-icon">♦️</div>
+                <div class="symbol-name-en">Diamond</div>
+                <div class="symbol-name-np">इत्ता</div>
+                <div class="bet-amount" id="bet-diamond">0</div>
+            </div>
+        </div>
+        
+        <div class="betting-controls">
+            <button class="bet-button" onclick="setBetAmount(10)">Bet ₹10</button>
+            <button class="bet-button" onclick="setBetAmount(25)">Bet ₹25</button>
+            <button class="bet-button" onclick="setBetAmount(50)">Bet ₹50</button>
+            <button class="bet-button" onclick="setBetAmount(100)">Bet ₹100</button>
+            <button class="control-button" onclick="clearAllBets()">Clear Bets</button>
+        </div>
+        
+        <div class="game-status" id="gameStatus">
+            Welcome to Langur Burja! Place your bets on the symbols and roll the sacred dice!
+        </div>
+        
+        <div class="dice-area">
+            <button class="roll-button" id="rollButton" onclick="rollDice()">
+                🎲 Roll The Sacred Dice 🎲
+            </button>
+            
+            <div class="dice-container" id="diceContainer">
+                <div class="die" id="die1">🎲</div>
+                <div class="die" id="die2">🎲</div>
+                <div class="die" id="die3">🎲</div>
+                <div class="die" id="die4">🎲</div>
+                <div class="die" id="die5">🎲</div>
+                <div class="die" id="die6">🎲</div>
+            </div>
+        </div>
+        
+        <div class="results-display" id="resultsDisplay" style="display: none;">
+            <div class="result-summary" id="resultSummary"></div>
+            <div class="payout-summary" id="payoutSummary"></div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-button" onclick="newGame()">🔄 New Game</button>
+            <button class="control-button" onclick="addFunds()">💰 Add Funds</button>
+            <button class="control-button" id="soundToggle" onclick="toggleSound()">🔊 Sound On</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            balance: 1000,
+            currentBetAmount: 25,
+            bets: { crown: 0, flag: 0, heart: 0, spade: 0, club: 0, diamond: 0 },
+            soundEnabled: true,
+            isRolling: false,
+            lastRoll: [],
+            totalBetThisRound: 0
+        };
+
+        // Symbol mappings
+        const SYMBOLS = {
+            crown: { icon: '👑', nepali: 'बुर्जा', english: 'Crown' },
+            flag: { icon: '🚩', nepali: 'झण्डी', english: 'Flag' },
+            heart: { icon: '♥️', nepali: 'पान', english: 'Heart' },
+            spade: { icon: '♠️', nepali: 'हुकुम', english: 'Spade' },
+            club: { icon: '♣️', nepali: 'चिडी', english: 'Club' },
+            diamond: { icon: '♦️', nepali: 'इत्ता', english: 'Diamond' }
+        };
+
+        const SYMBOL_ARRAY = ['crown', 'flag', 'heart', 'spade', 'club', 'diamond'];
+
+        function backToMenu() {
+            window.location.href = 'index.html';
+        }
+
+        function initializeGame() {
+            updateDisplay();
+            createFloatingDecorations();
+            playAmbientSound();
+        }
+
+        function createFloatingDecorations() {
+            const decorations = document.getElementById('decorations');
+            
+            // Create floating marigold petals
+            for (let i = 0; i < 15; i++) {
+                const marigold = document.createElement('div');
+                marigold.className = 'marigold';
+                marigold.style.left = Math.random() * 100 + '%';
+                marigold.style.top = Math.random() * 100 + '%';
+                marigold.style.animationDelay = Math.random() * 6 + 's';
+                marigold.style.animationDuration = (4 + Math.random() * 4) + 's';
+                decorations.appendChild(marigold);
+            }
+        }
+
+        function setBetAmount(amount) {
+            gameState.currentBetAmount = amount;
+            updateGameStatus(`Bet amount set to ₹${amount}. Click on symbols to place bets!`);
+            playSound('select');
+        }
+
+        function placeBet(symbol) {
+            if (gameState.isRolling) return;
+            
+            if (gameState.balance < gameState.currentBetAmount) {
+                updateGameStatus('❌ Insufficient balance! Add more funds or reduce bet amount.');
+                playSound('error');
+                return;
+            }
+            
+            gameState.bets[symbol] += gameState.currentBetAmount;
+            gameState.balance -= gameState.currentBetAmount;
+            gameState.totalBetThisRound += gameState.currentBetAmount;
+            
+            updateDisplay();
+            updateGameStatus(`₹${gameState.currentBetAmount} bet placed on ${SYMBOLS[symbol].english}! Total bets: ₹${gameState.totalBetThisRound}`);
+            playSound('bet');
+            
+            // Add visual feedback
+            const zone = document.querySelector(`[data-symbol="${symbol}"]`);
+            zone.classList.add('has-bet');
+        }
+
+        function clearAllBets() {
+            if (gameState.isRolling) return;
+            
+            // Refund all bets
+            for (const symbol in gameState.bets) {
+                gameState.balance += gameState.bets[symbol];
+                gameState.bets[symbol] = 0;
+            }
+            gameState.totalBetThisRound = 0;
+            
+            // Remove visual indicators
+            document.querySelectorAll('.symbol-zone').forEach(zone => {
+                zone.classList.remove('has-bet');
+            });
+            
+            updateDisplay();
+            updateGameStatus('All bets cleared and refunded!');
+            playSound('clear');
+        }
+
+        function rollDice() {
+            if (gameState.isRolling) return;
+            
+            if (gameState.totalBetThisRound === 0) {
+                updateGameStatus('❌ Place at least one bet before rolling!');
+                playSound('error');
+                return;
+            }
+            
+            gameState.isRolling = true;
+            document.getElementById('rollButton').disabled = true;
+            updateGameStatus('🎲 Rolling the sacred dice... May fortune favor you!');
+            
+            // Start rolling animation
+            const dice = document.querySelectorAll('.die');
+            dice.forEach(die => {
+                die.classList.add('rolling');
+                die.textContent = '🌀';
+            });
+            
+            playSound('roll');
+            
+            // Roll for 2 seconds then show results
+            setTimeout(() => {
+                const results = [];
+                
+                // Generate random results
+                for (let i = 0; i < 6; i++) {
+                    const symbolIndex = Math.floor(Math.random() * 6);
+                    const symbol = SYMBOL_ARRAY[symbolIndex];
+                    results.push(symbol);
+                    
+                    const die = document.getElementById(`die${i + 1}`);
+                    die.textContent = SYMBOLS[symbol].icon;
+                    die.classList.remove('rolling');
+                }
+                
+                gameState.lastRoll = results;
+                calculatePayouts(results);
+                
+                gameState.isRolling = false;
+                document.getElementById('rollButton').disabled = false;
+                
+            }, 2000);
+        }
+
+        function calculatePayouts(results) {
+            const counts = {};
+            let totalWinnings = 0;
+            let winDetails = [];
+            
+            // Count occurrences of each symbol
+            SYMBOL_ARRAY.forEach(symbol => counts[symbol] = 0);
+            results.forEach(symbol => counts[symbol]++);
+            
+            // Calculate payouts
+            for (const symbol in gameState.bets) {
+                if (gameState.bets[symbol] > 0) {
+                    const count = counts[symbol];
+                    if (count >= 2) {
+                        const payout = gameState.bets[symbol] * count;
+                        totalWinnings += payout;
+                        winDetails.push({
+                            symbol: symbol,
+                            bet: gameState.bets[symbol],
+                            count: count,
+                            payout: payout
+                        });
+                    }
+                }
+            }
+            
+            // Add winnings to balance
+            gameState.balance += totalWinnings;
+            
+            // Display results
+            displayResults(counts, winDetails, totalWinnings);
+            
+            // Reset bets for next round
+            gameState.bets = { crown: 0, flag: 0, heart: 0, spade: 0, club: 0, diamond: 0 };
+            gameState.totalBetThisRound = 0;
+            
+            // Remove bet indicators
+            document.querySelectorAll('.symbol-zone').forEach(zone => {
+                zone.classList.remove('has-bet');
+            });
+            
+            updateDisplay();
+            
+            if (totalWinnings > 0) {
+                playSound('win');
+                document.querySelector('.balance-amount').classList.add('win-animation');
+                setTimeout(() => {
+                    document.querySelector('.balance-amount').classList.remove('win-animation');
+                }, 2000);
+            } else {
+                playSound('lose');
+            }
+        }
+
+        function displayResults(counts, winDetails, totalWinnings) {
+            const resultsDisplay = document.getElementById('resultsDisplay');
+            const resultSummary = document.getElementById('resultSummary');
+            const payoutSummary = document.getElementById('payoutSummary');
+            
+            // Show dice results
+            resultSummary.innerHTML = '';
+            SYMBOL_ARRAY.forEach(symbol => {
+                const count = counts[symbol];
+                if (count > 0) {
+                    const item = document.createElement('div');
+                    item.className = 'result-item';
+                    item.innerHTML = `
+                        <div class="result-symbol">${SYMBOLS[symbol].icon}</div>
+                        <div class="result-count">${count}x</div>
+                    `;
+                    resultSummary.appendChild(item);
+                }
+            });
+            
+            // Show payout summary
+            if (totalWinnings > 0) {
+                let summary = `🎉 Congratulations! Total winnings: ₹${totalWinnings}<br>`;
+                winDetails.forEach(win => {
+                    summary += `${SYMBOLS[win.symbol].icon} ${SYMBOLS[win.symbol].english}: ${win.count}x matches = ₹${win.payout}<br>`;
+                });
+                payoutSummary.innerHTML = summary;
+                updateGameStatus(`🎉 You won ₹${totalWinnings}! Your fortune shines bright!`);
+            } else {
+                payoutSummary.innerHTML = '😔 No luck this time. The dice will favor you next round!';
+                updateGameStatus('Better luck next time! The sacred dice are unpredictable.');
+            }
+            
+            resultsDisplay.style.display = 'block';
+            
+            // Hide results after 8 seconds
+            setTimeout(() => {
+                resultsDisplay.style.display = 'none';
+            }, 8000);
+        }
+
+        function updateDisplay() {
+            document.getElementById('balance').textContent = gameState.balance;
+            
+            // Update bet displays
+            for (const symbol in gameState.bets) {
+                document.getElementById(`bet-${symbol}`).textContent = gameState.bets[symbol];
+            }
+        }
+
+        function updateGameStatus(message) {
+            document.getElementById('gameStatus').textContent = message;
+        }
+
+        function newGame() {
+            gameState.balance = 1000;
+            gameState.bets = { crown: 0, flag: 0, heart: 0, spade: 0, club: 0, diamond: 0 };
+            gameState.totalBetThisRound = 0;
+            gameState.isRolling = false;
+            
+            // Reset dice display
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`die${i}`).textContent = '🎲';
+            }
+            
+            // Clear bet indicators
+            document.querySelectorAll('.symbol-zone').forEach(zone => {
+                zone.classList.remove('has-bet');
+            });
+            
+            document.getElementById('resultsDisplay').style.display = 'none';
+            document.getElementById('rollButton').disabled = false;
+            
+            updateDisplay();
+            updateGameStatus('New game started! May the festivals bring you fortune!');
+            playSound('newgame');
+        }
+
+        function addFunds() {
+            gameState.balance += 500;
+            updateDisplay();
+            updateGameStatus('₹500 added to your balance! Ready to play more!');
+            playSound('coins');
+        }
+
+        function playSound(type) {
+            if (!gameState.soundEnabled) return;
+            
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            switch (type) {
+                case 'bet':
+                    playTone(audioContext, 600, 0.15, 'sine');
+                    break;
+                case 'roll':
+                    // Dice rolling sound - multiple quick tones
+                    [400, 500, 600, 700, 800].forEach((freq, i) => {
+                        setTimeout(() => {
+                            playTone(audioContext, freq, 0.1, 'square');
+                        }, i * 100);
+                    });
+                    break;
+                case 'win':
+                    // Festival celebration sound
+                    [523, 659, 784, 1047, 1319].forEach((freq, i) => {
+                        setTimeout(() => {
+                            playTone(audioContext, freq, 0.3, 'sine');
+                        }, i * 150);
+                    });
+                    break;
+                case 'lose':
+                    playTone(audioContext, 200, 0.5, 'sawtooth');
+                    break;
+                case 'coins':
+                    // Coin sound
+                    [800, 1000, 1200].forEach((freq, i) => {
+                        setTimeout(() => {
+                            playTone(audioContext, freq, 0.2, 'triangle');
+                        }, i * 50);
+                    });
+                    break;
+                case 'select':
+                    playTone(audioContext, 800, 0.1, 'sine');
+                    break;
+                case 'clear':
+                    playTone(audioContext, 400, 0.3, 'triangle');
+                    break;
+                case 'error':
+                    playTone(audioContext, 150, 0.4, 'sawtooth');
+                    break;
+                case 'newgame':
+                    // Temple bell sound
+                    [220, 330, 440, 660].forEach((freq, i) => {
+                        setTimeout(() => {
+                            playTone(audioContext, freq, 0.4, 'sine');
+                        }, i * 200);
+                    });
+                    break;
+            }
+        }
+
+        function playTone(audioContext, frequency, duration, type = 'sine') {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function playAmbientSound() {
+            // Subtle ambient temple bells every 30 seconds
+            if (gameState.soundEnabled) {
+                setInterval(() => {
+                    if (gameState.soundEnabled && !gameState.isRolling) {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        setTimeout(() => playTone(audioContext, 440, 1, 'sine'), Math.random() * 2000);
+                    }
+                }, 30000);
+            }
+        }
+
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            const button = document.getElementById('soundToggle');
+            button.textContent = gameState.soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+        }
+
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeGame();
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !gameState.isRolling) {
+                e.preventDefault();
+                rollDice();
+            } else if (e.key >= '1' && e.key <= '6') {
+                const symbolIndex = parseInt(e.key) - 1;
+                placeBet(SYMBOL_ARRAY[symbolIndex]);
+            }
+        });
+    </script>
+</body>
+</html>
