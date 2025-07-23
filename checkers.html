@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkers - Ancient Strategic Battle</title>
+    <meta name="description" content="Play Checkers - the ancient game of diagonal movement and strategic captures!">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(45deg, #4A90E2, #357ABD);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            z-index: 100;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+        }
+        
+        .game-container {
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .game-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .game-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            color: #FFD700;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .game-subtitle {
+            font-size: 1.2rem;
+            color: #B8860B;
+            margin-bottom: 2rem;
+        }
+        
+        .cultural-info {
+            max-width: 600px;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #FFD700;
+            color: #E0E0E0;
+            line-height: 1.6;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .player-info {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .red-player { color: #CC0000; }
+        .black-player { color: #333333; }
+        
+        .checkers-board {
+            width: 560px;
+            height: 560px;
+            border: 6px solid #8B4513;
+            border-radius: 15px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .checker-square {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .checker-square.light {
+            background: #F0D9B5;
+        }
+        
+        .checker-square.dark {
+            background: #B58863;
+        }
+        
+        .checker-square.valid-move {
+            box-shadow: inset 0 0 0 4px #00FF00;
+        }
+        
+        .checker-square.valid-move::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: rgba(0, 255, 0, 0.6);
+            border-radius: 50%;
+            animation: moveHint 1s infinite ease-in-out;
+        }
+        
+        @keyframes moveHint {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.3); opacity: 0.9; }
+        }
+        
+        .checker-square.selected {
+            box-shadow: inset 0 0 0 4px #FFD700;
+            background: rgba(255, 215, 0, 0.3) !important;
+        }
+        
+        .checker-piece {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            position: relative;
+            animation: placePiece 0.5s ease-out;
+        }
+        
+        @keyframes placePiece {
+            0% { transform: scale(0) rotate(180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .checker-piece:hover {
+            transform: scale(1.1);
+        }
+        
+        .checker-piece.red {
+            background: radial-gradient(circle at 30% 30%, #FF6666, #CC0000);
+            border: 3px solid #800000;
+            box-shadow: 0 4px 15px rgba(204, 0, 0, 0.5);
+        }
+        
+        .checker-piece.black {
+            background: radial-gradient(circle at 30% 30%, #666666, #333333);
+            border: 3px solid #000000;
+            box-shadow: 0 4px 15px rgba(51, 51, 51, 0.5);
+        }
+        
+        .checker-piece.king {
+            border-width: 5px;
+            font-size: 2rem;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+        
+        .checker-piece.king.red {
+            border-color: #FFD700;
+            color: #FFD700;
+        }
+        
+        .checker-piece.king.black {
+            border-color: #FFD700;
+            color: #FFD700;
+        }
+        
+        .checker-piece.selected {
+            transform: scale(1.2);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 1);
+            animation: selectedPulse 0.8s infinite alternate;
+        }
+        
+        @keyframes selectedPulse {
+            from { box-shadow: 0 0 25px rgba(255, 215, 0, 1); }
+            to { box-shadow: 0 0 35px rgba(255, 215, 0, 1), 0 0 50px rgba(255, 215, 0, 0.5); }
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .control-button {
+            background: linear-gradient(45deg, #4A90E2, #357ABD);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+        
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+        }
+        
+        .game-status {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            font-size: 0.9rem;
+            color: #B8860B;
+            margin-bottom: 0.5rem;
+        }
+        
+        .score-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .win-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .win-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border: 3px solid #FFD700;
+            animation: modalAppear 0.5s ease-out;
+            min-width: 400px;
+        }
+        
+        @keyframes modalAppear {
+            0% { transform: scale(0.5) rotate(5deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .win-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #FFD700;
+            animation: titleGlow 1s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.3); }
+        }
+        
+        .play-button {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+        
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .checkers-board {
+                width: 400px;
+                height: 400px;
+            }
+            
+            .checker-square {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .checker-piece {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
+            .game-title {
+                font-size: 2.5rem;
+            }
+            
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="backToMenu()">← Back to Games</button>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">⚫ Checkers ⚪</h1>
+            <p class="game-subtitle">Ancient Strategic Battle</p>
+        </div>
+        
+        <div class="cultural-info">
+            <strong>5000 Years of Strategy:</strong> Dating back to Ancient Egypt around 3000 BC, Checkers is one of the world's oldest board games. Known as Draughts in many countries, this game of diagonal movement and strategic captures has challenged minds across civilizations.
+        </div>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">You (Red)</div>
+                <div class="score-value red-player" id="playerScore">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Pieces Left</div>
+                <div class="score-value" style="color: #FFD700;"><span id="playerPieces">12</span> vs <span id="aiPieces">12</span></div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">AI (Black)</div>
+                <div class="score-value black-player" id="aiScore">0</div>
+            </div>
+        </div>
+        
+        <div class="game-status" id="gameStatus">Your turn! Click a red piece to see available moves.</div>
+        
+        <div class="checkers-board" id="gameBoard"></div>
+        
+        <div class="controls">
+            <button class="control-button" onclick="newGame()">🔄 New Game</button>
+            <button class="control-button" onclick="toggleDifficulty()">🎯 <span id="difficultyText">AI</span></button>
+            <button class="control-button" onclick="resetScore()">📊 Reset Score</button>
+            <button class="control-button" id="soundToggle" onclick="toggleSound()">🔊 Sound On</button>
+        </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div class="win-modal" id="winModal">
+        <div class="win-content">
+            <h2 class="win-title" id="winTitle">Victory!</h2>
+            <p id="winMessage">Congratulations!</p>
+            <br>
+            <button class="play-button" onclick="newGame(); closeWinModal();">Play Again</button>
+            <button class="control-button" onclick="backToMenu();">Back to Games</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            board: Array(8).fill().map(() => Array(8).fill(null)),
+            currentPlayer: 'red', // red (player) or black (AI)
+            selectedPiece: null,
+            gameOver: false,
+            soundEnabled: true,
+            difficulty: 'hard',
+            scores: { player: 0, ai: 0 },
+            mustCapture: false,
+            captureSequence: []
+        };
+
+        function backToMenu() {
+            window.location.href = 'index.html';
+        }
+
+        function initializeGame() {
+            // Reset board
+            gameState.board = Array(8).fill().map(() => Array(8).fill(null));
+            
+            // Place pieces
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if ((row + col) % 2 === 1) { // Only on dark squares
+                        if (row < 3) {
+                            gameState.board[row][col] = { color: 'black', king: false };
+                        } else if (row > 4) {
+                            gameState.board[row][col] = { color: 'red', king: false };
+                        }
+                    }
+                }
+            }
+            
+            gameState.currentPlayer = 'red';
+            gameState.selectedPiece = null;
+            gameState.gameOver = false;
+            gameState.mustCapture = false;
+            gameState.captureSequence = [];
+            
+            createBoard();
+            updateGameStatus();
+            updatePieceCount();
+        }
+
+        function createBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    square.className = `checker-square ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
+                    square.dataset.row = row;
+                    square.dataset.col = col;
+                    
+                    const piece = gameState.board[row][col];
+                    if (piece) {
+                        const pieceElement = document.createElement('div');
+                        pieceElement.className = `checker-piece ${piece.color}${piece.king ? ' king' : ''}`;
+                        pieceElement.textContent = piece.king ? '♔' : '';
+                        square.appendChild(pieceElement);
+                    }
+                    
+                    square.addEventListener('click', () => handleSquareClick(row, col));
+                    board.appendChild(square);
+                }
+            }
+        }
+
+        function handleSquareClick(row, col) {
+            if (gameState.gameOver || gameState.currentPlayer !== 'red') return;
+
+            const piece = gameState.board[row][col];
+            const square = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            
+            if (gameState.selectedPiece) {
+                const [selectedRow, selectedCol] = gameState.selectedPiece;
+                
+                if (row === selectedRow && col === selectedCol) {
+                    // Deselect piece
+                    clearSelection();
+                } else if (piece && piece.color === 'red') {
+                    // Select different piece
+                    selectPiece(row, col);
+                } else if (isValidMove(selectedRow, selectedCol, row, col)) {
+                    // Make move
+                    makeMove(selectedRow, selectedCol, row, col);
+                } else {
+                    clearSelection();
+                }
+            } else if (piece && piece.color === 'red') {
+                // Select piece
+                selectPiece(row, col);
+            }
+        }
+
+        function selectPiece(row, col) {
+            clearSelection();
+            
+            // Check if this piece can capture (if captures are mandatory)
+            if (gameState.mustCapture) {
+                const canCapture = getCaptureMoves(row, col).length > 0;
+                if (!canCapture) return; // Can't select pieces that can't capture
+            }
+            
+            gameState.selectedPiece = [row, col];
+            
+            const square = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            square.classList.add('selected');
+            const piece = square.querySelector('.checker-piece');
+            if (piece) piece.classList.add('selected');
+            
+            // Show valid moves
+            const validMoves = getValidMoves(row, col);
+            validMoves.forEach(([moveRow, moveCol]) => {
+                const moveSquare = document.querySelector(`[data-row="${moveRow}"][data-col="${moveCol}"]`);
+                moveSquare.classList.add('valid-move');
+            });
+        }
+
+        function clearSelection() {
+            gameState.selectedPiece = null;
+            document.querySelectorAll('.checker-square').forEach(square => {
+                square.classList.remove('selected', 'valid-move');
+            });
+            document.querySelectorAll('.checker-piece').forEach(piece => {
+                piece.classList.remove('selected');
+            });
+        }
+
+        function getValidMoves(row, col) {
+            const piece = gameState.board[row][col];
+            if (!piece) return [];
+            
+            // If captures are mandatory, only return capture moves
+            if (gameState.mustCapture) {
+                return getCaptureMoves(row, col);
+            }
+            
+            // Check for captures first (they are mandatory if available)
+            const captures = getCaptureMoves(row, col);
+            if (captures.length > 0) {
+                gameState.mustCapture = true;
+                return captures;
+            }
+            
+            // Regular moves
+            return getRegularMoves(row, col);
+        }
+
+        function getRegularMoves(row, col) {
+            const piece = gameState.board[row][col];
+            const moves = [];
+            
+            // Determine movement directions
+            let directions = [];
+            if (piece.king) {
+                directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+            } else if (piece.color === 'red') {
+                directions = [[-1, -1], [-1, 1]]; // Move up
+            } else {
+                directions = [[1, -1], [1, 1]]; // Move down
+            }
+            
+            for (const [dx, dy] of directions) {
+                const newRow = row + dx;
+                const newCol = col + dy;
+                
+                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                    if (!gameState.board[newRow][newCol]) {
+                        moves.push([newRow, newCol]);
+                    }
+                }
+            }
+            
+            return moves;
+        }
+
+        function getCaptureMoves(row, col) {
+            const piece = gameState.board[row][col];
+            const captures = [];
+            
+            // Determine movement directions
+            let directions = [];
+            if (piece.king) {
+                directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+            } else if (piece.color === 'red') {
+                directions = [[-1, -1], [-1, 1]]; // Move up
+            } else {
+                directions = [[1, -1], [1, 1]]; // Move down
+            }
+            
+            for (const [dx, dy] of directions) {
+                const jumpRow = row + dx;
+                const jumpCol = col + dy;
+                const landRow = row + dx * 2;
+                const landCol = col + dy * 2;
+                
+                if (landRow >= 0 && landRow < 8 && landCol >= 0 && landCol < 8) {
+                    const jumpedPiece = gameState.board[jumpRow][jumpCol];
+                    const landSquare = gameState.board[landRow][landCol];
+                    
+                    if (jumpedPiece && jumpedPiece.color !== piece.color && !landSquare) {
+                        captures.push([landRow, landCol]);
+                    }
+                }
+            }
+            
+            return captures;
+        }
+
+        function isValidMove(fromRow, fromCol, toRow, toCol) {
+            const validMoves = getValidMoves(fromRow, fromCol);
+            return validMoves.some(([row, col]) => row === toRow && col === toCol);
+        }
+
+        function makeMove(fromRow, fromCol, toRow, toCol) {
+            const piece = gameState.board[fromRow][fromCol];
+            const isCapture = Math.abs(fromRow - toRow) === 2;
+            
+            // Move piece
+            gameState.board[toRow][toCol] = piece;
+            gameState.board[fromRow][fromCol] = null;
+            
+            // Handle capture
+            if (isCapture) {
+                const capturedRow = (fromRow + toRow) / 2;
+                const capturedCol = (fromCol + toCol) / 2;
+                gameState.board[capturedRow][capturedCol] = null;
+                playSound('capture');
+                
+                // Check for additional captures
+                const additionalCaptures = getCaptureMoves(toRow, toCol);
+                if (additionalCaptures.length > 0) {
+                    // Continue capture sequence
+                    gameState.selectedPiece = [toRow, toCol];
+                    gameState.mustCapture = true;
+                    createBoard();
+                    selectPiece(toRow, toCol);
+                    updateGameStatus();
+                    return;
+                }
+            } else {
+                playSound('move');
+            }
+            
+            // Check for king promotion
+            if (!piece.king) {
+                if ((piece.color === 'red' && toRow === 0) || (piece.color === 'black' && toRow === 7)) {
+                    piece.king = true;
+                    playSound('king');
+                }
+            }
+            
+            clearSelection();
+            gameState.mustCapture = false;
+            createBoard();
+            updatePieceCount();
+            
+            // Check for game end
+            if (checkGameEnd()) return;
+            
+            // Switch players
+            gameState.currentPlayer = gameState.currentPlayer === 'red' ? 'black' : 'red';
+            updateGameStatus();
+            
+            // AI move
+            if (gameState.currentPlayer === 'black') {
+                setTimeout(() => makeAIMove(), 800);
+            }
+        }
+
+        function makeAIMove() {
+            const move = getBestMove();
+            if (move) {
+                makeMove(move.from[0], move.from[1], move.to[0], move.to[1]);
+            }
+        }
+
+        function getBestMove() {
+            const allMoves = getAllValidMoves('black');
+            if (allMoves.length === 0) return null;
+            
+            // Simple AI - prioritize captures, then random
+            const captures = allMoves.filter(move => Math.abs(move.from[0] - move.to[0]) === 2);
+            if (captures.length > 0) {
+                return captures[Math.floor(Math.random() * captures.length)];
+            }
+            
+            return allMoves[Math.floor(Math.random() * allMoves.length)];
+        }
+
+        function getAllValidMoves(color) {
+            const moves = [];
+            let hasCaptures = false;
+            
+            // First pass - check for captures
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const piece = gameState.board[row][col];
+                    if (piece && piece.color === color) {
+                        const captures = getCaptureMoves(row, col);
+                        if (captures.length > 0) {
+                            hasCaptures = true;
+                            captures.forEach(to => {
+                                moves.push({ from: [row, col], to: to });
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // If captures exist, only return captures (mandatory)
+            if (hasCaptures) return moves;
+            
+            // Second pass - regular moves
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const piece = gameState.board[row][col];
+                    if (piece && piece.color === color) {
+                        const regularMoves = getRegularMoves(row, col);
+                        regularMoves.forEach(to => {
+                            moves.push({ from: [row, col], to: to });
+                        });
+                    }
+                }
+            }
+            
+            return moves;
+        }
+
+        function checkGameEnd() {
+            const redMoves = getAllValidMoves('red');
+            const blackMoves = getAllValidMoves('black');
+            
+            if (redMoves.length === 0) {
+                handleGameEnd('black');
+                return true;
+            } else if (blackMoves.length === 0) {
+                handleGameEnd('red');
+                return true;
+            }
+            
+            return false;
+        }
+
+        function handleGameEnd(winner) {
+            gameState.gameOver = true;
+            
+            if (winner === 'red') {
+                gameState.scores.player++;
+                showWinModal('🎉 You Win! 🎉', 'Excellent strategic play!');
+                playSound('win');
+            } else {
+                gameState.scores.ai++;
+                showWinModal('🤖 AI Wins!', 'The AI outmaneuvered you!');
+                playSound('lose');
+            }
+            
+            updateScoreDisplay();
+        }
+
+        function updatePieceCount() {
+            let redCount = 0, blackCount = 0;
+            
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const piece = gameState.board[row][col];
+                    if (piece) {
+                        if (piece.color === 'red') redCount++;
+                        else blackCount++;
+                    }
+                }
+            }
+            
+            document.getElementById('playerPieces').textContent = redCount;
+            document.getElementById('aiPieces').textContent = blackCount;
+        }
+
+        function playSound(type) {
+            if (!gameState.soundEnabled) return;
+            
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            if (type === 'move') {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                
+                osc.frequency.value = 400;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.2);
+            } else if (type === 'capture') {
+                // Capture sound - two quick tones
+                [500, 300].forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.frequency.value = freq;
+                        osc.type = 'square';
+                        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.15);
+                    }, i * 100);
+                });
+            } else if (type === 'king') {
+                // King promotion - triumphant sound
+                [523, 659, 784].forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.frequency.value = freq;
+                        osc.type = 'sine';
+                        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.3);
+                    }, i * 100);
+                });
+            } else if (type === 'win') {
+                // Victory fanfare
+                [523, 659, 784, 1047].forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.frequency.value = freq;
+                        osc.type = 'sine';
+                        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.4);
+                    }, i * 150);
+                });
+            } else if (type === 'lose') {
+                // Losing sound
+                [400, 350, 300, 250].forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.frequency.value = freq;
+                        osc.type = 'sawtooth';
+                        gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.3);
+                    }, i * 100);
+                });
+            }
+        }
+
+        function showWinModal(title, message) {
+            document.getElementById('winTitle').textContent = title;
+            document.getElementById('winMessage').textContent = message;
+            document.getElementById('winModal').style.display = 'flex';
+        }
+
+        function closeWinModal() {
+            document.getElementById('winModal').style.display = 'none';
+        }
+
+        function updateGameStatus() {
+            const status = document.getElementById('gameStatus');
+            if (gameState.gameOver) return;
+            
+            if (gameState.currentPlayer === 'red') {
+                if (gameState.mustCapture) {
+                    status.textContent = 'Your turn! You must capture - click your piece that can jump.';
+                } else {
+                    status.textContent = 'Your turn! Click a red piece to see available moves.';
+                }
+                status.style.color = '#CC0000';
+            } else {
+                status.textContent = 'AI is thinking...';
+                status.style.color = '#666666';
+            }
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('playerScore').textContent = gameState.scores.player;
+            document.getElementById('aiScore').textContent = gameState.scores.ai;
+        }
+
+        function newGame() {
+            closeWinModal();
+            initializeGame();
+        }
+
+        function toggleDifficulty() {
+            const difficulties = ['easy', 'medium', 'hard'];
+            const currentIndex = difficulties.indexOf(gameState.difficulty);
+            const nextIndex = (currentIndex + 1) % difficulties.length;
+            gameState.difficulty = difficulties[nextIndex];
+            
+            document.getElementById('difficultyText').textContent = 'AI';
+        }
+
+        function resetScore() {
+            gameState.scores = { player: 0, ai: 0 };
+            updateScoreDisplay();
+        }
+
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            const button = document.getElementById('soundToggle');
+            button.textContent = gameState.soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+        }
+
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeGame();
+            updateScoreDisplay();
+        });
+    </script>
+</body>
+</html>
