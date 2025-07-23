@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bagh-Chal: The Ancient Nepali Board Game</title>
+    <title>Traditional Games Collection</title>
+    <meta name="description" content="Experience timeless strategy games from around the world - Bagh-Chal, Chess, Checkers, and more!">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
         
@@ -29,7 +30,7 @@
             justify-content: center;
             text-align: center;
             position: relative;
-            background: radial-gradient(ellipse at center, rgba(255,215,0,0.1) 0%, transparent 70%);
+            padding: 2rem;
         }
         
         .nepal-pattern {
@@ -38,12 +39,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0.05;
+            opacity: 0.03;
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFD700' fill-opacity='0.3'%3E%3Cpath d='M30 30c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-2c9.9 0 18-8.1 18-18S39.9-8 30-8 12 0.1 12 10s8.1 18 18 18z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             pointer-events: none;
         }
         
-        .title {
+        .main-title {
             font-family: 'Cinzel', serif;
             font-size: 4rem;
             font-weight: 700;
@@ -53,7 +54,7 @@
             background-clip: text;
             margin-bottom: 1rem;
             text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-            animation: glow 2s ease-in-out infinite alternate;
+            animation: glow 3s ease-in-out infinite alternate;
         }
         
         @keyframes glow {
@@ -62,1370 +63,307 @@
         }
         
         .subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            margin-bottom: 3rem;
             color: #B8860B;
             font-weight: 300;
+            max-width: 800px;
         }
         
-        .intro-text {
-            max-width: 800px;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 3rem;
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .game-card:hover::before {
+            left: 100%;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.3);
+            border-color: #FFD700;
+        }
+        
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+        
+        .game-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #FFD700;
+            margin-bottom: 1rem;
+        }
+        
+        .game-description {
             color: #E0E0E0;
-            text-align: justify;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .game-origin {
+            color: #B8860B;
+            font-style: italic;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
         }
         
         .play-button {
             background: linear-gradient(45deg, #FF6B35, #F7931E);
             border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
+            padding: 12px 30px;
+            font-size: 1rem;
             font-weight: 600;
             color: white;
-            border-radius: 50px;
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         
         .play-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.6);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
             background: linear-gradient(45deg, #F7931E, #FF6B35);
         }
         
-        .game-container {
-            display: none;
-            min-height: 100vh;
-            padding: 2rem;
-        }
-        
-        .game-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .game-title {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            color: #FFD700;
-            margin-bottom: 1rem;
-        }
-        
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .player-info {
-            text-align: center;
-            flex: 1;
-        }
-        
-        .player-name {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-        
-        .player-count {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        
-        .tigers { color: #FF6B35; }
-        .goats { color: #90EE90; }
-        
-        .game-board-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .board-wrapper {
-            position: relative;
-            background: radial-gradient(circle, rgba(139, 69, 19, 0.3) 0%, rgba(101, 67, 33, 0.2) 100%);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 215, 0, 0.3);
-        }
-        
-        .game-board {
-            width: 600px;
-            height: 600px;
-            position: relative;
-            background: #2C1810;
-            border-radius: 10px;
-            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
-        }
-        
-        .board-line {
-            position: absolute;
-            background: #FFD700;
-            opacity: 0.8;
-            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-        }
-        
-        .board-point {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #FFD700 0%, #DAA520 100%);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-            border: 2px solid #B8860B;
-        }
-        
-        .board-point:hover {
-            transform: scale(1.2);
-            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
-        }
-        
-        .board-point.valid-move {
-            animation: pulse 1s infinite;
-            box-shadow: 0 0 20px #00FF00;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        
-        .piece {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 2.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: placepiece 0.5s ease-out;
-        }
-        
-        @keyframes placepiece {
-            0% { transform: scale(0) rotate(180deg); opacity: 0; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-        
-        .tiger {
-            background: radial-gradient(circle, #FF4500 0%, #CC3300 100%);
-            color: white;
-            box-shadow: 0 3px 10px rgba(255, 69, 0, 0.5);
-            border: 2px solid #8B0000;
-        }
-        
-        .goat {
-            background: radial-gradient(circle, #90EE90 0%, #32CD32 100%);
-            color: #006400;
-            box-shadow: 0 3px 10px rgba(144, 238, 144, 0.5);
-            border: 2px solid #228B22;
-        }
-        
-        .piece.selected {
-            transform: scale(1.3);
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
-            animation: selectedPulse 0.8s infinite alternate;
-        }
-        
-        @keyframes selectedPulse {
-            from { box-shadow: 0 0 20px rgba(255, 255, 0, 0.8); }
-            to { box-shadow: 0 0 30px rgba(255, 255, 0, 1), 0 0 40px rgba(255, 255, 0, 0.5); }
-        }
-        
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            min-width: 200px;
-        }
-        
-        .control-button {
-            background: linear-gradient(45deg, #4A90E2, #357ABD);
-            border: none;
-            padding: 12px 24px;
-            color: white;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
-        }
-        
-        .control-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
-        }
-        
-        .control-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .game-status {
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 1rem 0;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .phase-indicator {
-            background: linear-gradient(45deg, #9B59B6, #8E44AD);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: inline-block;
-            margin-bottom: 1rem;
-        }
-        
-        .game-rules {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-        }
-        
-        .rules-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
-            color: #FFD700;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        
-        .rules-content {
-            line-height: 1.6;
-            color: #E0E0E0;
-        }
-        
-        .rules-content h3 {
-            color: #FFD700;
-            margin: 1rem 0 0.5rem;
-        }
-        
-        .rules-content ul {
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .win-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-        }
-        
-        .win-content {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            padding: 3rem;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        .featured-card {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.1) 100%);
             border: 3px solid #FFD700;
-            animation: modalAppear 0.5s ease-out;
-            min-width: 400px;
             position: relative;
-            overflow: hidden;
         }
         
-        @keyframes modalAppear {
-            0% { transform: scale(0.5) rotate(5deg); opacity: 0; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-        
-        .win-title {
-            font-family: 'Cinzel', serif;
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: dance 0.6s ease-in-out infinite alternate;
-        }
-        
-        @keyframes dance {
-            0% { 
-                transform: rotate(-3deg) scale(1);
-                text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-            }
-            50% { 
-                transform: rotate(0deg) scale(1.1);
-                text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
-            }
-            100% { 
-                transform: rotate(3deg) scale(1);
-                text-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
-            }
-        }
-        
-        .win-message {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            animation: bounce 1s ease-in-out infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-        
-        .confetti {
+        .featured-badge {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #FFD700;
-            animation: confetti-fall 3s linear infinite;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #1a1a2e;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        .confetti:nth-child(2n) { background: #FF6B35; animation-delay: 0.5s; }
-        .confetti:nth-child(3n) { background: #90EE90; animation-delay: 1s; }
-        .confetti:nth-child(4n) { background: #87CEEB; animation-delay: 1.5s; }
-        .confetti:nth-child(5n) { background: #DDA0DD; animation-delay: 2s; }
         
         .cultural-note {
             background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
             border-left: 4px solid #FFD700;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-radius: 0 10px 10px 0;
+            padding: 2rem;
+            margin: 3rem auto;
+            border-radius: 0 15px 15px 0;
             font-style: italic;
             color: #F0E68C;
+            max-width: 800px;
+            text-align: left;
+        }
+        
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            color: #B8860B;
+            border-top: 1px solid rgba(255, 215, 0, 0.3);
         }
         
         @media (max-width: 768px) {
-            .title { font-size: 2.5rem; }
-            .game-board { width: 450px; height: 450px; }
-            .game-board-container { flex-direction: column; }
-            .intro-text { text-align: left; }
-            .board-point { width: 40px; height: 40px; }
-            .piece { width: 60px; height: 60px; font-size: 2rem; }
+            .main-title { font-size: 2.5rem; }
+            .subtitle { font-size: 1.3rem; }
+            .games-grid { grid-template-columns: 1fr; }
+            .featured-card { grid-column: 1; }
+            .game-card { padding: 1.5rem; }
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: #FFD700;
+            font-size: 2rem;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
         }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <div class="hero-section" id="heroSection">
+    <div class="hero-section">
         <div class="nepal-pattern"></div>
         
-        <h1 class="title">बाघ चाल</h1>
-        <h2 class="subtitle">Bagh-Chal: The Ancient Game of Tigers and Goats</h2>
+        <h1 class="main-title">Traditional Games Collection</h1>
+        <p class="subtitle">Experience timeless strategy and wisdom from cultures around the world</p>
         
-        <div class="intro-text">
-            <p><strong>Discover the timeless strategy of Nepal!</strong> <cite index="16-1">Bagh-chal (Nepali: बाघ चाल, meaning "tiger game") is a strategic, two-player board game that originated in Nepal.</cite> This ancient game represents the eternal struggle between predator and prey, where <cite index="1-1,16-1">one player controls four tigers and the other player controls up to twenty goats. The tigers 'hunt' the goats while the goats attempt to block the tigers' movements.</cite></p>
-            
-            <div class="cultural-note">
-                <cite index="15-1">"Originally, people would carve the board's 5x5 grid into sand or stone, and use pebbles as game pieces. The theme of the game mimicked the threat of tigers on the hunt for animals that strayed from the herd."</cite> - This 1000-year-old game reflects the deep connection between Nepali culture and the natural world.
+        <div class="games-grid">
+            <!-- Featured Game: Bagh-Chal -->
+            <div class="game-card featured-card" onclick="playGame('bagh-chal.html')">
+                <div class="featured-badge">Featured</div>
+                <span class="game-icon">🐅🐐</span>
+                <h2 class="game-title">Bagh-Chal</h2>
+                <p class="game-description">The ancient Nepali game of Tigers and Goats. Four tigers hunt twenty goats while the goats attempt to trap the tigers in this asymmetric strategy masterpiece.</p>
+                <p class="game-origin">🇳🇵 From Nepal • 1000+ years old</p>
+                <button class="play-button">Play Now</button>
             </div>
             
-            <p><cite index="12-1">The game has survived till now from one generation to another through imitation and oral traditions.</cite> <cite index="6-1">But the game still might be saved also because of technology. There are online versions of the game as well as tablet/mobile game apps.</cite> Today, you can experience this cultural treasure digitally, helping preserve this ancient wisdom for future generations.</p>
+            <!-- Chess -->
+            <div class="game-card" onclick="playGame('chess.html')">
+                <span class="game-icon">♔♛</span>
+                <h2 class="game-title">Chess</h2>
+                <p class="game-description">The ultimate strategy game. Command your army of pieces in the royal game that has captivated minds for over 1500 years.</p>
+                <p class="game-origin">🌍 International • 6th Century</p>
+                <button class="play-button">Play Now</button>
+            </div>
+            
+            <!-- Tic-Tac-Toe -->
+            <div class="game-card" onclick="playGame('tic-tac-toe.html')">
+                <span class="game-icon">❌⭕</span>
+                <h2 class="game-title">Tic-Tac-Toe</h2>
+                <p class="game-description">The classic game of X's and O's. Simple to learn but surprisingly strategic when played optimally.</p>
+                <p class="game-origin">🏛️ Ancient Rome • 1st Century BC</p>
+                <button class="play-button">Play Now</button>
+            </div>
+            
+            <!-- Connect Four -->
+            <div class="game-card" onclick="playGame('connect-four.html')">
+                <span class="game-icon">🔴🟡</span>
+                <h2 class="game-title">Connect Four</h2>
+                <p class="game-description">Drop your colored discs and be the first to connect four in a row. A modern classic of strategic thinking.</p>
+                <p class="game-origin">🇺🇸 Modern Classic • 1974</p>
+                <button class="play-button">Play Now</button>
+            </div>
+            
+            <!-- Checkers -->
+            <div class="game-card" onclick="playGame('checkers.html')">
+                <span class="game-icon">⚫⚪</span>
+                <h2 class="game-title">Checkers</h2>
+                <p class="game-description">Jump your way to victory in this ancient game of diagonal movement and strategic captures.</p>
+                <p class="game-origin">🏺 Ancient Egypt • 3000 BC</p>
+                <button class="play-button">Play Now</button>
+            </div>
+            
+            <!-- Nine Men's Morris -->
+            <div class="game-card" onclick="playGame('nine-mens-morris.html')">
+                <span class="game-icon">◯◯◯</span>
+                <h2 class="game-title">Nine Men's Morris</h2>
+                <p class="game-description">Form mills of three pieces in a row to capture your opponent's pieces in this medieval strategy game.</p>
+                <p class="game-origin">🏰 Medieval Europe • 12th Century</p>
+                <button class="play-button">Play Now</button>
+            </div>
         </div>
         
-        <button class="play-button" onclick="startGame()">🐅 Play Bagh-Chal 🐐</button>
+        <div class="cultural-note">
+            <strong>Preserving Cultural Heritage Through Games</strong><br>
+            Each game in this collection represents centuries of cultural wisdom and strategic thinking. From the ancient temples of Egypt to the mountains of Nepal, these games have brought people together across generations. By playing them today, we honor the traditions and keep the spirit of these timeless classics alive.
+        </div>
+        
+        <div class="scroll-indicator">⬇</div>
     </div>
-
-    <!-- Game Section -->
-    <div class="game-container" id="gameContainer">
-        <div class="game-header">
-            <h1 class="game-title">Bagh-Chal</h1>
-            <div class="phase-indicator" id="phaseIndicator">Phase 1: Placing Goats</div>
-        </div>
-        
-        <div class="game-info">
-            <div class="player-info">
-                <div class="player-name tigers">🐅 Tigers (Computer)</div>
-                <div class="player-count tigers" id="tigerCount">4 Tigers</div>
-                <div>Goal: Capture 5 goats</div>
-                <div>Captured: <span id="capturedGoats">0</span> goats</div>
-            </div>
-            
-            <div class="player-info">
-                <div class="player-name goats">🐐 Goats (You)</div>
-                <div class="player-count goats" id="goatCount">20 Remaining</div>
-                <div>Goal: Trap all tigers</div>
-                <div>Placed: <span id="placedGoats">0</span>/20</div>
-            </div>
-        </div>
-        
-        <div class="game-status" id="gameStatus">Your turn! Place a goat on any empty position.</div>
-        
-        <div class="game-board-container">
-            <div class="board-wrapper">
-                <div class="game-board" id="gameBoard"></div>
-            </div>
-            
-            <div class="controls">
-                <button class="control-button" onclick="newGame()">🔄 New Game</button>
-                <button class="control-button" onclick="showRules()">📖 Rules</button>
-                <button class="control-button" onclick="toggleDifficulty()">🎯 <span id="difficultyText">AI</span></button>
-                <button class="control-button" onclick="backToMenu()">🏠 Main Menu</button>
-                <button class="control-button" id="soundToggle" onclick="toggleSound()">🔊 Sound On</button>
-            </div>
-        </div>
-        
-        <div class="game-rules" id="gameRules" style="display: none;">
-            <h2 class="rules-title">Game Rules</h2>
-            <div class="rules-content">
-                <h3>🎯 Objective</h3>
-                <ul>
-                    <li><strong>Tigers:</strong> <cite index="1-1,5-1">Capture five goats to win</cite></li>
-                    <li><strong>Goats:</strong> <cite index="1-1,5-1">Block all tigers so they cannot move</cite></li>
-                </ul>
-                
-                <h3>🎮 How to Play</h3>
-                <ul>
-                    <li><cite index="16-1">At the start of the game all four tigers are placed on the four corners of the grid, facing the center. No goats are placed on the board during the initial setup.</cite></li>
-                    <li><strong>Phase 1:</strong> <cite index="3-1">If the goat player has goats in hand, he must use his turn to place one on any empty point on the board.</cite></li>
-                    <li><strong>Phase 2:</strong> <cite index="16-1">Once all of the goats have been placed on the board, goats must move in the same fashion as the tigers, one intersection to another.</cite></li>
-                </ul>
-                
-                <h3>⚔️ Combat</h3>
-                <ul>
-                    <li><cite index="3-1">To eat a goat, the tiger player must jump with one of his tigers along a marked line, over an adjacent goat, to an empty point beyond.</cite></li>
-                    <li><cite index="1-1">A tiger cannot jump over another tiger.</cite></li>
-                    <li><cite index="1-1">They can capture only one goat at a time.</cite></li>
-                </ul>
-                
-                <h3>🏆 Winning</h3>
-                <ul>
-                    <li><cite index="5-1">A game is won by the tigers if they capture (eat) 5 goats.</cite></li>
-                    <li><cite index="5-1">A game is won by the goats if they succeed in preventing any tiger from being able to move.</cite></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Win Modal -->
-    <div class="win-modal" id="winModal">
-        <div class="win-content">
-            <h2 class="win-title" id="winTitle">🎉 Congratulations! 🎉</h2>
-            <p class="win-message" id="winMessage">Victory!</p>
-            <br>
-            <button class="play-button" onclick="newGame(); closeWinModal();">Play Again</button>
-            <button class="control-button" onclick="backToMenu(); closeWinModal();" style="margin-left: 1rem;">Main Menu</button>
-        </div>
-    </div>
+    
+    <footer class="footer">
+        <p>Traditional Games Collection • Preserving Cultural Heritage Through Interactive Entertainment</p>
+        <p>Built with ❤️ for game lovers worldwide</p>
+    </footer>
 
     <script>
-        // Game state
-        let gameState = {
-            board: Array(5).fill().map(() => Array(5).fill(null)),
-            currentPlayer: 'goat', // goat starts
-            phase: 1, // 1: placing goats, 2: moving pieces
-            goatsRemaining: 20,
-            goatsPlaced: 0,
-            capturedGoats: 0,
-            selectedPiece: null,
-            gameOver: false,
-            soundEnabled: true,
-            difficulty: 'hard' // easy, medium, hard (but display as "AI")
-        };
-
-        // Board connections - defines valid moves
-        const connections = [
-            // Row 0
-            [[0,1], [1,0], [1,1]],
-            [[0,0], [0,2], [1,1]],
-            [[0,1], [0,3], [1,1], [1,2]],
-            [[0,2], [0,4], [1,3]],
-            [[0,3], [1,4], [1,3]],
-            // Row 1
-            [[0,0], [1,1], [2,0]],
-            [[0,0], [0,1], [0,2], [1,0], [1,2], [2,0], [2,1], [2,2]],
-            [[0,2], [1,0], [1,2], [2,1]],
-            [[0,4], [1,3], [2,4]],
-            [[0,4], [1,3], [2,3], [2,4]],
-            // Row 2
-            [[1,0], [2,1], [3,0]],
-            [[1,1], [2,0], [2,2], [3,1]],
-            [[1,1], [1,3], [2,1], [2,3], [3,1], [3,2]],
-            [[1,3], [2,2], [2,4], [3,3]],
-            [[1,3], [1,4], [2,3], [3,4]],
-            // Row 3
-            [[2,0], [3,1], [4,0]],
-            [[2,1], [3,0], [3,2], [4,1]],
-            [[2,2], [3,1], [3,3], [4,2]],
-            [[2,3], [3,2], [3,4], [4,3]],
-            [[2,4], [3,3], [4,4]],
-            // Row 4
-            [[3,0], [4,1], [3,1]],
-            [[3,1], [4,0], [4,2]],
-            [[3,2], [4,1], [4,3], [3,1], [3,3]],
-            [[3,3], [4,2], [4,4]],
-            [[3,4], [4,3], [3,3]]
-        ];
-
-        function getValidMoves(row, col) {
-            const index = row * 5 + col;
-            return connections[index] || [];
-        }
-
-        // Enhanced sound effects
-        function playSound(type) {
-            if (!gameState.soundEnabled) return;
+        function playGame(gameFile) {
+            // Add a smooth transition effect
+            document.body.style.opacity = '0.7';
+            document.body.style.transform = 'scale(0.95)';
             
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            
-            if (type === 'goat_place') {
-                // Goat sound - soft bleating
-                playGoatSound(audioContext);
-            } else if (type === 'tiger_roar') {
-                // Tiger roar when capturing
-                playTigerRoar(audioContext);
-            } else if (type === 'move') {
-                // Simple move sound
-                playSimpleSound(audioContext, 523, 0.15);
-            } else if (type === 'victory_music') {
-                // Victory celebration music
-                playVictoryMusic(audioContext);
-            }
-        }
-
-        function playGoatSound(audioContext) {
-            // Create a goat-like bleating sound
-            const frequencies = [300, 250, 350, 280];
-            frequencies.forEach((freq, i) => {
-                setTimeout(() => {
-                    const osc = audioContext.createOscillator();
-                    const gain = audioContext.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioContext.destination);
-                    
-                    osc.frequency.value = freq;
-                    osc.type = 'sawtooth';
-                    gain.gain.setValueAtTime(0.2, audioContext.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                    
-                    osc.start(audioContext.currentTime);
-                    osc.stop(audioContext.currentTime + 0.1);
-                }, i * 50);
-            });
-        }
-
-        function playTigerRoar(audioContext) {
-            // Create a tiger roar sound
-            const osc1 = audioContext.createOscillator();
-            const osc2 = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            
-            osc1.connect(gain);
-            osc2.connect(gain);
-            gain.connect(audioContext.destination);
-            
-            osc1.frequency.value = 80;
-            osc2.frequency.value = 120;
-            osc1.type = 'sawtooth';
-            osc2.type = 'square';
-            
-            gain.gain.setValueAtTime(0.4, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
-            
-            // Add growling effect
-            const lfo = audioContext.createOscillator();
-            const lfoGain = audioContext.createGain();
-            lfo.connect(lfoGain);
-            lfoGain.connect(osc1.frequency);
-            lfo.frequency.value = 20;
-            lfoGain.gain.value = 30;
-            
-            osc1.start(audioContext.currentTime);
-            osc2.start(audioContext.currentTime);
-            lfo.start(audioContext.currentTime);
-            
-            osc1.stop(audioContext.currentTime + 0.8);
-            osc2.stop(audioContext.currentTime + 0.8);
-            lfo.stop(audioContext.currentTime + 0.8);
-        }
-
-        function playSimpleSound(audioContext, frequency, duration) {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = frequency;
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + duration);
-        }
-
-        function playVictoryMusic(audioContext) {
-            // Victory fanfare with more elaborate melody
-            const melody = [
-                {freq: 523, time: 0, duration: 0.3},      // C5
-                {freq: 659, time: 0.3, duration: 0.3},    // E5
-                {freq: 784, time: 0.6, duration: 0.3},    // G5
-                {freq: 1047, time: 0.9, duration: 0.6},   // C6
-                {freq: 880, time: 1.5, duration: 0.3},    // A5
-                {freq: 1047, time: 1.8, duration: 0.9}    // C6
-            ];
-            
-            melody.forEach(note => {
-                setTimeout(() => {
-                    const osc = audioContext.createOscillator();
-                    const gain = audioContext.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioContext.destination);
-                    
-                    osc.frequency.value = note.freq;
-                    osc.type = 'sine';
-                    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + note.duration);
-                    
-                    osc.start(audioContext.currentTime);
-                    osc.stop(audioContext.currentTime + note.duration);
-                }, note.time * 1000);
-            });
-        }
-
-        function toggleSound() {
-            gameState.soundEnabled = !gameState.soundEnabled;
-            const button = document.getElementById('soundToggle');
-            button.textContent = gameState.soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
-        }
-
-        function toggleDifficulty() {
-            const difficulties = ['easy', 'medium', 'hard'];
-            const currentIndex = difficulties.indexOf(gameState.difficulty);
-            const nextIndex = (currentIndex + 1) % difficulties.length;
-            gameState.difficulty = difficulties[nextIndex];
-            
-            // Always show "AI" regardless of difficulty
-            const difficultyText = document.getElementById('difficultyText');
-            difficultyText.textContent = 'AI';
-        }
-
-        function getAIDepth() {
-            switch(gameState.difficulty) {
-                case 'easy': return 3;
-                case 'medium': return 4;
-                case 'hard': return 5;
-                default: return 5;
-            }
-        }
-
-        function startGame() {
-            document.getElementById('heroSection').style.display = 'none';
-            document.getElementById('gameContainer').style.display = 'block';
-            initializeGame();
-        }
-
-        function backToMenu() {
-            document.getElementById('heroSection').style.display = 'flex';
-            document.getElementById('gameContainer').style.display = 'none';
-        }
-
-        function initializeGame() {
-            // Preserve sound and difficulty settings
-            const preservedSoundEnabled = gameState.soundEnabled;
-            const preservedDifficulty = gameState.difficulty;
-            
-            // Reset game state
-            gameState = {
-                board: Array(5).fill().map(() => Array(5).fill(null)),
-                currentPlayer: 'goat',
-                phase: 1,
-                goatsRemaining: 20,
-                goatsPlaced: 0,
-                capturedGoats: 0,
-                selectedPiece: null,
-                gameOver: false,
-                soundEnabled: preservedSoundEnabled,
-                difficulty: preservedDifficulty
-            };
-
-            // Place tigers on corners
-            gameState.board[0][0] = 'tiger';
-            gameState.board[0][4] = 'tiger';
-            gameState.board[4][0] = 'tiger';
-            gameState.board[4][4] = 'tiger';
-
-            createBoard();
-            updateUI();
-        }
-
-        function createBoard() {
-            const board = document.getElementById('gameBoard');
-            board.innerHTML = '';
-
-            // Check if mobile
-            const isMobile = window.innerWidth <= 768;
-            const spacing = isMobile ? 94 : 125;
-            const offset = isMobile ? 38 : 50;
-
-            // Draw lines first
-            drawLines(board, isMobile);
-
-            // Create points
-            for (let row = 0; row < 5; row++) {
-                for (let col = 0; col < 5; col++) {
-                    const point = document.createElement('div');
-                    point.className = 'board-point';
-                    point.style.left = (col * spacing + offset) + 'px';
-                    point.style.top = (row * spacing + offset) + 'px';
-                    point.dataset.row = row;
-                    point.dataset.col = col;
-                    
-                    point.addEventListener('click', () => handlePointClick(row, col));
-                    
-                    board.appendChild(point);
-                    
-                    // Add piece if exists
-                    if (gameState.board[row][col]) {
-                        addPiece(point, gameState.board[row][col]);
-                    }
-                }
-            }
-        }
-
-        function drawLines(board, isMobile = false) {
-            const spacing = isMobile ? 94 : 125;  
-            const boardOffset = isMobile ? 38 : 50;
-            const pointRadius = isMobile ? 20 : 25; // Half of point size
-            
-            // Centers of the 5x5 grid points - these are the exact centers of each point
-            const centers = [];
-            for (let i = 0; i < 5; i++) {
-                centers.push(boardOffset + pointRadius + (i * spacing));
-            }
-            
-            const lineThickness = 3;
-            
-            // Helper function to create a line element
-            const createLine = (x1, y1, x2, y2) => {
-                const line = document.createElement('div');
-                line.className = 'board-line';
-                line.style.position = 'absolute';
-                line.style.backgroundColor = '#FFD700';
-                line.style.opacity = '0.8';
-                line.style.boxShadow = '0 0 5px rgba(255, 215, 0, 0.5)';
-                
-                const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-                const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
-                
-                line.style.width = length + 'px';
-                line.style.height = lineThickness + 'px';
-                line.style.left = x1 + 'px';
-                line.style.top = y1 - lineThickness/2 + 'px';
-                line.style.transform = `rotate(${angle}deg)`;
-                line.style.transformOrigin = '0 50%';
-                
-                board.appendChild(line);
-            };
-            
-            // Draw horizontal lines
-            for (let row = 0; row < 5; row++) {
-                createLine(centers[0], centers[row], centers[4], centers[row]);
-            }
-            
-            // Draw vertical lines
-            for (let col = 0; col < 5; col++) {
-                createLine(centers[col], centers[0], centers[col], centers[4]);
-            }
-            
-            // Draw diagonal lines
-            // Main diagonals (corner to corner)
-            createLine(centers[0], centers[0], centers[4], centers[4]);
-            createLine(centers[4], centers[0], centers[0], centers[4]);
-            
-            // Inner square diagonals
-            createLine(centers[1], centers[1], centers[3], centers[3]);
-            createLine(centers[3], centers[1], centers[1], centers[3]);
-            
-            // Edge middle to side middle lines
-            createLine(centers[2], centers[0], centers[4], centers[2]);
-            createLine(centers[2], centers[0], centers[0], centers[2]);
-            createLine(centers[2], centers[4], centers[4], centers[2]);
-            createLine(centers[2], centers[4], centers[0], centers[2]);
-        }
-
-        function addPiece(point, type) {
-            const piece = document.createElement('div');
-            piece.className = `piece ${type}`;
-            piece.textContent = type === 'tiger' ? '🐅' : '🐐';
-            
-            if (type === 'tiger') {
-                piece.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (gameState.phase === 2 && gameState.currentPlayer === 'tiger') {
-                        selectPiece(parseInt(point.dataset.row), parseInt(point.dataset.col));
-                    }
-                });
-            } else if (type === 'goat' && gameState.phase === 2) {
-                piece.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (gameState.currentPlayer === 'goat') {
-                        selectPiece(parseInt(point.dataset.row), parseInt(point.dataset.col));
-                    }
-                });
-            }
-            
-            point.appendChild(piece);
-        }
-
-        function handlePointClick(row, col) {
-            if (gameState.gameOver) return;
-
-            if (gameState.phase === 1 && gameState.currentPlayer === 'goat') {
-                // Phase 1: Place goat
-                if (!gameState.board[row][col]) {
-                    placeGoat(row, col);
-                }
-            } else if (gameState.phase === 2) {
-                if (gameState.selectedPiece) {
-                    // Try to move selected piece
-                    attemptMove(gameState.selectedPiece.row, gameState.selectedPiece.col, row, col);
-                }
-            }
-        }
-
-        function placeGoat(row, col) {
-            if (gameState.gameOver) return;
-            
-            gameState.board[row][col] = 'goat';
-            gameState.goatsRemaining--;
-            gameState.goatsPlaced++;
-            
-            playSound('goat_place');
-            createBoard();
-            updateUI();
-
-            if (gameState.goatsRemaining === 0) {
-                gameState.phase = 2;
-                updatePhaseIndicator();
-            }
-
-            // Check win conditions (in case tigers are already trapped)
-            if (checkWinCondition()) {
-                return;
-            }
-
-            // Switch to tiger's turn
-            gameState.currentPlayer = 'tiger';
-            updateGameStatus();
-
-            // Tiger's turn (AI)
             setTimeout(() => {
-                if (!gameState.gameOver) {
-                    makeAIMove();
-                }
-            }, 800);
+                window.location.href = gameFile;
+            }, 300);
         }
-
-        function selectPiece(row, col) {
-            // Clear previous selection
-            document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
-            document.querySelectorAll('.board-point').forEach(p => p.classList.remove('valid-move'));
-
-            const piece = gameState.board[row][col];
-            if (piece === gameState.currentPlayer) {
-                gameState.selectedPiece = { row, col };
-                
-                // Highlight selected piece
-                const point = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
-                const pieceElement = point.querySelector('.piece');
-                if (pieceElement) {
-                    pieceElement.classList.add('selected');
-                }
-
-                // Show valid moves
-                const validMoves = getValidMovesForPiece(row, col);
-                validMoves.forEach(([moveRow, moveCol]) => {
-                    const movePoint = document.querySelector(`[data-row="${moveRow}"][data-col="${moveCol}"]`);
-                    if (movePoint) {
-                        movePoint.classList.add('valid-move');
-                    }
-                });
-            }
-        }
-
-        function getValidMovesForPiece(row, col) {
-            const piece = gameState.board[row][col];
-            const moves = [];
-            const connections = getValidMoves(row, col);
-
-            for (const [moveRow, moveCol] of connections) {
-                if (piece === 'tiger') {
-                    // Tigers can move to empty spots or capture goats
-                    if (!gameState.board[moveRow][moveCol]) {
-                        moves.push([moveRow, moveCol]);
-                    } else if (gameState.board[moveRow][moveCol] === 'goat') {
-                        // Check if tiger can jump over goat
-                        const jumpRow = moveRow + (moveRow - row);
-                        const jumpCol = moveCol + (moveCol - col);
-                        if (jumpRow >= 0 && jumpRow < 5 && jumpCol >= 0 && jumpCol < 5 && !gameState.board[jumpRow][jumpCol]) {
-                            moves.push([jumpRow, jumpCol]);
-                        }
-                    }
-                } else if (piece === 'goat') {
-                    // Goats can only move to adjacent empty spots
-                    if (!gameState.board[moveRow][moveCol]) {
-                        moves.push([moveRow, moveCol]);
-                    }
-                }
-            }
-
-            return moves;
-        }
-
-        function attemptMove(fromRow, fromCol, toRow, toCol) {
-            if (gameState.gameOver) return;
-            
-            const piece = gameState.board[fromRow][fromCol];
-            const validMoves = getValidMovesForPiece(fromRow, fromCol);
-            
-            const isValid = validMoves.some(([row, col]) => row === toRow && col === toCol);
-            
-            if (isValid) {
-                // Check if it's a capture move for tigers
-                let captured = false;
-                if (piece === 'tiger') {
-                    const midRow = (fromRow + toRow) / 2;
-                    const midCol = (fromCol + toCol) / 2;
-                    if (Number.isInteger(midRow) && Number.isInteger(midCol) && gameState.board[midRow][midCol] === 'goat') {
-                        gameState.board[midRow][midCol] = null;
-                        gameState.capturedGoats++;
-                        captured = true;
-                    }
-                }
-
-                // Move piece
-                gameState.board[fromRow][fromCol] = null;
-                gameState.board[toRow][toCol] = piece;
-                gameState.selectedPiece = null;
-
-                playSound(captured ? 'tiger_roar' : 'move');
-                createBoard();
-                updateUI();
-
-                // Check win conditions after each move
-                if (checkWinCondition()) {
-                    return;
-                }
-
-                // Switch players
-                gameState.currentPlayer = gameState.currentPlayer === 'tiger' ? 'goat' : 'tiger';
-                updateGameStatus();
-
-                // If it's tiger's turn, make AI move
-                if (gameState.currentPlayer === 'tiger' && !gameState.gameOver) {
-                    setTimeout(() => {
-                        if (!gameState.gameOver) {
-                            makeAIMove();
-                        }
-                    }, 800);
-                }
-            } else {
-                // Invalid move, clear selection
-                gameState.selectedPiece = null;
-                document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
-                document.querySelectorAll('.board-point').forEach(p => p.classList.remove('valid-move'));
-            }
-        }
-
-        // Simple AI using minimax algorithm
-        function makeAIMove() {
-            const bestMove = findBestMove();
-            if (bestMove) {
-                if (bestMove.type === 'place' && gameState.phase === 1) {
-                    // This shouldn't happen as tigers don't place pieces
-                } else if (bestMove.type === 'move') {
-                    attemptMove(bestMove.fromRow, bestMove.fromCol, bestMove.toRow, bestMove.toCol);
-                }
-            }
-        }
-
-        function findBestMove() {
-            let bestScore = -Infinity;
-            let bestMove = null;
-            
-            // Get all possible tiger moves
-            for (let row = 0; row < 5; row++) {
-                for (let col = 0; col < 5; col++) {
-                    if (gameState.board[row][col] === 'tiger') {
-                        const moves = getValidMovesForPiece(row, col);
-                        for (const [toRow, toCol] of moves) {
-                            // Simulate move
-                            const originalBoard = gameState.board.map(row => [...row]);
-                            const originalCaptured = gameState.capturedGoats;
-                            
-                            // Check if it's a capture
-                            const midRow = (row + toRow) / 2;
-                            const midCol = (col + toCol) / 2;
-                            let captured = false;
-                            if (Number.isInteger(midRow) && Number.isInteger(midCol) && gameState.board[midRow][midCol] === 'goat') {
-                                gameState.board[midRow][midCol] = null;
-                                gameState.capturedGoats++;
-                                captured = true;
-                            }
-                            
-                            gameState.board[row][col] = null;
-                            gameState.board[toRow][toCol] = 'tiger';
-                            
-                            const score = minimax(2, false, -Infinity, Infinity);
-                            
-                            if (score > bestScore) {
-                                bestScore = score;
-                                bestMove = {
-                                    type: 'move',
-                                    fromRow: row,
-                                    fromCol: col,
-                                    toRow: toRow,
-                                    toCol: toCol
-                                };
-                            }
-                            
-                            // Restore board
-                            gameState.board = originalBoard;
-                            gameState.capturedGoats = originalCaptured;
-                        }
-                    }
-                }
-            }
-            
-            return bestMove;
-        }
-
-        function minimax(depth, isMaximizing, alpha, beta) {
-            if (depth === 0 || gameState.capturedGoats >= 5) {
-                return evaluateBoard();
-            }
-            
-            if (isMaximizing) {
-                let maxScore = -Infinity;
-                
-                // Tiger moves
-                for (let row = 0; row < 5; row++) {
-                    for (let col = 0; col < 5; col++) {
-                        if (gameState.board[row][col] === 'tiger') {
-                            const moves = getValidMovesForPiece(row, col);
-                            for (const [toRow, toCol] of moves) {
-                                // Simulate move
-                                const originalBoard = gameState.board.map(row => [...row]);
-                                const originalCaptured = gameState.capturedGoats;
-                                
-                                const midRow = (row + toRow) / 2;
-                                const midCol = (col + toCol) / 2;
-                                if (Number.isInteger(midRow) && Number.isInteger(midCol) && gameState.board[midRow][midCol] === 'goat') {
-                                    gameState.board[midRow][midCol] = null;
-                                    gameState.capturedGoats++;
-                                }
-                                
-                                gameState.board[row][col] = null;
-                                gameState.board[toRow][toCol] = 'tiger';
-                                
-                                const score = minimax(depth - 1, false, alpha, beta);
-                                maxScore = Math.max(maxScore, score);
-                                alpha = Math.max(alpha, score);
-                                
-                                // Restore board
-                                gameState.board = originalBoard;
-                                gameState.capturedGoats = originalCaptured;
-                                
-                                if (beta <= alpha) break;
-                            }
-                        }
-                    }
-                }
-                return maxScore;
-            } else {
-                let minScore = Infinity;
-                
-                // Goat moves (only in phase 2)
-                if (gameState.phase === 2) {
-                    for (let row = 0; row < 5; row++) {
-                        for (let col = 0; col < 5; col++) {
-                            if (gameState.board[row][col] === 'goat') {
-                                const moves = getValidMovesForPiece(row, col);
-                                for (const [toRow, toCol] of moves) {
-                                    // Simulate move
-                                    const originalBoard = gameState.board.map(row => [...row]);
-                                    
-                                    gameState.board[row][col] = null;
-                                    gameState.board[toRow][toCol] = 'goat';
-                                    
-                                    const score = minimax(depth - 1, true, alpha, beta);
-                                    minScore = Math.min(minScore, score);
-                                    beta = Math.min(beta, score);
-                                    
-                                    // Restore board
-                                    gameState.board = originalBoard;
-                                    
-                                    if (beta <= alpha) break;
-                                }
-                            }
-                        }
-                    }
-                }
-                return minScore;
-            }
-        }
-
-        function evaluateBoard() {
-            // Simple evaluation function
-            let score = 0;
-            
-            // Captured goats are very valuable
-            score += gameState.capturedGoats * 100;
-            
-            // Count goats on board
-            let goatsOnBoard = 0;
-            for (let row = 0; row < 5; row++) {
-                for (let col = 0; col < 5; col++) {
-                    if (gameState.board[row][col] === 'goat') {
-                        goatsOnBoard++;
-                    }
-                }
-            }
-            
-            // Fewer goats on board is better for tigers
-            score += (20 - goatsOnBoard) * 10;
-            
-            // Tiger mobility
-            let tigerMoves = 0;
-            for (let row = 0; row < 5; row++) {
-                for (let col = 0; col < 5; col++) {
-                    if (gameState.board[row][col] === 'tiger') {
-                        tigerMoves += getValidMovesForPiece(row, col).length;
-                    }
-                }
-            }
-            score += tigerMoves * 2;
-            
-            return score;
-        }
-
-        function checkWinCondition() {
-            // Check if tigers won (captured 5 goats)
-            if (gameState.capturedGoats >= 5) {
-                setTimeout(() => {
-                    showWinModal('Tigers Win!', 'The tigers have successfully captured 5 goats!');
-                }, 300);
-                return true;
-            }
-
-            // Check if goats won (no tiger can move)
-            if (gameState.phase === 2 || gameState.goatsRemaining === 0) { // Only check this in phase 2 or when all goats are placed
-                let tigersCanMove = false;
-                for (let row = 0; row < 5; row++) {
-                    for (let col = 0; col < 5; col++) {
-                        if (gameState.board[row][col] === 'tiger') {
-                            if (getValidMovesForPiece(row, col).length > 0) {
-                                tigersCanMove = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (tigersCanMove) break;
-                }
-
-                if (!tigersCanMove) {
-                    setTimeout(() => {
-                        showWinModal('Goats Win!', 'The goats have successfully trapped all tigers!');
-                    }, 300);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        function showWinModal(winner, message) {
-            if (gameState.gameOver) return; // Prevent multiple win modals
-            
-            gameState.gameOver = true;
-            
-            // Clear any existing confetti first
-            const modal = document.getElementById('winModal');
-            const existingConfetti = modal.querySelectorAll('.confetti');
-            existingConfetti.forEach(piece => piece.remove());
-            
-            // Update the modal content with proper winner display
-            const titleElement = document.getElementById('winTitle');
-            const messageElement = document.getElementById('winMessage');
-            
-            if (winner.includes('Tigers')) {
-                titleElement.innerHTML = '🐅 Congratulations!<br>Tigers Won! 🐅';
-                titleElement.style.color = '#FF6B35';
-            } else {
-                titleElement.innerHTML = '🐐 Congratulations!<br>Goats Won! 🐐';
-                titleElement.style.color = '#90EE90';
-            }
-            
-            messageElement.textContent = message;
-            
-            // Show the modal
-            modal.style.display = 'flex';
-            
-            // Create confetti effect after a short delay
-            setTimeout(() => {
-                createConfetti();
-            }, 100);
-            
-            // Play victory music
-            setTimeout(() => {
-                playSound('victory_music');
-            }, 200);
-        }
-
-        function createConfetti() {
-            const modal = document.getElementById('winModal');
-            
-            // Create multiple confetti pieces
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                    confetti.style.animationDelay = Math.random() * 1 + 's';
-                    
-                    // Random colors for confetti
-                    const colors = ['#FFD700', '#FF6B35', '#90EE90', '#87CEEB', '#DDA0DD', '#FFA500'];
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    modal.appendChild(confetti);
-                    
-                    // Remove confetti after animation
-                    setTimeout(() => {
-                        if (confetti.parentNode) {
-                            confetti.parentNode.removeChild(confetti);
-                        }
-                    }, 6000);
-                }, i * 50);
-            }
-        }
-
-        function closeWinModal() {
-            const modal = document.getElementById('winModal');
-            modal.style.display = 'none';
-            
-            // Clear any remaining confetti
-            const confetti = modal.querySelectorAll('.confetti');
-            confetti.forEach(piece => piece.remove());
-        }
-
-        function updateUI() {
-            document.getElementById('tigerCount').textContent = '4 Tigers';
-            document.getElementById('capturedGoats').textContent = gameState.capturedGoats;
-            document.getElementById('goatCount').textContent = `${gameState.goatsRemaining} Remaining`;
-            document.getElementById('placedGoats').textContent = gameState.goatsPlaced;
-        }
-
-        function updatePhaseIndicator() {
-            const indicator = document.getElementById('phaseIndicator');
-            indicator.textContent = gameState.phase === 1 ? 'Phase 1: Placing Goats' : 'Phase 2: Moving Pieces';
-        }
-
-        function updateGameStatus() {
-            const status = document.getElementById('gameStatus');
-            const difficultyCapitalized = gameState.difficulty.charAt(0).toUpperCase() + gameState.difficulty.slice(1);
-            
-            if (gameState.gameOver) return;
-            
-            if (gameState.phase === 1) {
-                if (gameState.currentPlayer === 'goat') {
-                    status.textContent = 'Your turn! Place a goat on any empty position.';
-                } else {
-                    status.textContent = `Tigers turn (${difficultyCapitalized} AI)... The computer is thinking.`;
-                }
-            } else {
-                if (gameState.currentPlayer === 'goat') {
-                    status.textContent = 'Your turn! Click a goat to select it, then click where to move.';
-                } else {
-                    status.textContent = `Tigers turn (${difficultyCapitalized} AI)... The computer is making its move.`;
-                }
-            }
-        }
-
-        function newGame() {
-            closeWinModal();
-            initializeGame();
-        }
-
-        function showRules() {
-            const rules = document.getElementById('gameRules');
-            rules.style.display = rules.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Initialize the game when page loads
+        
+        // Add hover sound effects
         document.addEventListener('DOMContentLoaded', () => {
-            // Game will be initialized when user clicks play
+            const cards = document.querySelectorAll('.game-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    // Subtle hover sound effect
+                    playHoverSound();
+                });
+            });
         });
-
-        // Initialize the game when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize difficulty display to show "AI"
-            document.getElementById('difficultyText').textContent = 'AI';
-        });
-
-        // Handle window resize for responsive design
-        window.addEventListener('resize', () => {
-            if (document.getElementById('gameContainer').style.display !== 'none') {
-                createBoard();
+        
+        function playHoverSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                // Silently handle audio context errors
             }
+        }
+        
+        // Smooth scroll animation for scroll indicator
+        document.querySelector('.scroll-indicator').addEventListener('click', () => {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Add subtle parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const pattern = document.querySelector('.nepal-pattern');
+            pattern.style.transform = `translateY(${scrolled * 0.5}px)`;
         });
     </script>
 </body>
