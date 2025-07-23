@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bagh-Chal: The Ancient Nepali Board Game</title>
+    <meta name="description" content="Play Bagh-Chal, the traditional Nepali strategy game of Tigers and Goats online for free!">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, rgba(255,215,0,0.1) 0%, transparent 70%);
+        }
+        
+        .nepal-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFD700' fill-opacity='0.3'%3E%3Cpath d='M30 30c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-2c9.9 0 18-8.1 18-18S39.9-8 30-8 12 0.1 12 10s8.1 18 18 18z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+        
+        .title {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF6B35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.3); }
+            to { text-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.3); }
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #B8860B;
+            font-weight: 300;
+        }
+        
+        .intro-text {
+            max-width: 800px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            color: #E0E0E0;
+            text-align: justify;
+        }
+        
+        .play-button {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.6);
+            background: linear-gradient(45deg, #F7931E, #FF6B35);
+        }
+        
+        .game-container {
+            display: none;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .game-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .game-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: #FFD700;
+            margin-bottom: 1rem;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(45deg, #4A90E2, #357ABD);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            z-index: 100;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .player-info {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .player-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .player-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .tigers { color: #FF6B35; }
+        .goats { color: #90EE90; }
+        
+        .game-board-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .board-wrapper {
+            position: relative;
+            background: radial-gradient(circle, rgba(139, 69, 19, 0.3) 0%, rgba(101, 67, 33, 0.2) 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .game-board {
+            width: 600px;
+            height: 600px;
+            position: relative;
+            background: #2C1810;
+            border-radius: 10px;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .board-line {
+            position: absolute;
+            background: #FFD700;
+            opacity: 0.8;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+        
+        .board-point {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #FFD700 0%, #DAA520 100%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            border: 2px solid #B8860B;
+        }
+        
+        .board-point:hover {
+            transform: scale(1.2);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+        
+        .board-point.valid-move {
+            animation: pulse 1s infinite;
+            box-shadow: 0 0 20px #00FF00;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .piece {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: placepiece 0.5s ease-out;
+        }
+        
+        @keyframes placepiece {
+            0% { transform: scale(0) rotate(180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .tiger {
+            background: radial-gradient(circle, #FF4500 0%, #CC3300 100%);
+            color: white;
+            box-shadow: 0 3px 10px rgba(255, 69, 0, 0.5);
+            border: 2px solid #8B0000;
+        }
+        
+        .goat {
+            background: radial-gradient(circle, #90EE90 0%, #32CD32 100%);
+            color: #006400;
+            box-shadow: 0 3px 10px rgba(144, 238, 144, 0.5);
+            border: 2px solid #228B22;
+        }
+        
+        .piece.selected {
+            transform: scale(1.3);
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+            animation: selectedPulse 0.8s infinite alternate;
+        }
+        
+        @keyframes selectedPulse {
+            from { box-shadow: 0 0 20px rgba(255, 255, 0, 0.8); }
+            to { box-shadow: 0 0 30px rgba(255, 255, 0, 1), 0 0 40px rgba(255, 255, 0, 0.5); }
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 200px;
+        }
+        
+        .control-button {
+            background: linear-gradient(45deg, #4A90E2, #357ABD);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+        
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+        }
+        
+        .control-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .game-status {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .phase-indicator {
+            background: linear-gradient(45deg, #9B59B6, #8E44AD);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .win-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .win-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border: 3px solid #FFD700;
+            animation: modalAppear 0.5s ease-out;
+            min-width: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes modalAppear {
+            0% { transform: scale(0.5) rotate(5deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .win-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: dance 0.6s ease-in-out infinite alternate;
+        }
+        
+        @keyframes dance {
+            0% { 
+                transform: rotate(-3deg) scale(1);
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            }
+            50% { 
+                transform: rotate(0deg) scale(1.1);
+                text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            }
+            100% { 
+                transform: rotate(3deg) scale(1);
+                text-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+            }
+        }
+        
+        .win-message {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            animation: bounce 1s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FFD700;
+            animation: confetti-fall 3s linear infinite;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .confetti:nth-child(2n) { background: #FF6B35; animation-delay: 0.5s; }
+        .confetti:nth-child(3n) { background: #90EE90; animation-delay: 1s; }
+        .confetti:nth-child(4n) { background: #87CEEB; animation-delay: 1.5s; }
+        .confetti:nth-child(5n) { background: #DDA0DD; animation-delay: 2s; }
+        
+        .cultural-note {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
+            border-left: 4px solid #FFD700;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: #F0E68C;
+        }
+        
+        @media (max-width: 768px) {
+            .title { font-size: 2.5rem; }
+            .game-board { width: 450px; height: 450px; }
+            .game-board-container { flex-direction: column; }
+            .intro-text { text-align: left; }
+            .board-point { width: 40px; height: 40px; }
+            .piece { width: 60px; height: 60px; font-size: 2rem; }
+            .back-button { top: 1rem; left: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero-section" id="heroSection">
+        <div class="nepal-pattern"></div>
+        
+        <h1 class="title">बाघ चाल</h1>
+        <h2 class="subtitle">Bagh-Chal: The Ancient Game of Tigers and Goats</h2>
+        
+        <div class="intro-text">
+            <p><strong>Discover the timeless strategy of Nepal!</strong> Bagh-chal (Nepali: बाघ चाल, meaning "tiger game") is a strategic, two-player board game that originated in Nepal. This ancient game represents the eternal struggle between predator and prey, where one player controls four tigers and the other player controls up to twenty goats. The tigers 'hunt' the goats while the goats attempt to block the tigers' movements.</p>
+            
+            <div class="cultural-note">
+                "Originally, people would carve the board's 5x5 grid into sand or stone, and use pebbles as game pieces. The theme of the game mimicked the threat of tigers on the hunt for animals that strayed from the herd." - This 1000-year-old game reflects the deep connection between Nepali culture and the natural world.
+            </div>
+            
+            <p>The game has survived till now from one generation to another through imitation and oral traditions. Today, you can experience this cultural treasure digitally, helping preserve this ancient wisdom for future generations.</p>
+        </div>
+        
+        <button class="play-button" onclick="startGame()">🐅 Play Bagh-Chal 🐐</button>
+    </div>
+
+    <!-- Game Section -->
+    <div class="game-container" id="gameContainer">
+        <button class="back-button" onclick="backToMenu()">← Back to Games</button>
+        
+        <div class="game-header">
+            <h1 class="game-title">Bagh-Chal</h1>
+            <div class="phase-indicator" id="phaseIndicator">Phase 1: Placing Goats</div>
+        </div>
+        
+        <div class="game-info">
+            <div class="player-info">
+                <div class="player-name tigers">🐅 Tigers (AI)</div>
+                <div class="player-count tigers" id="tigerCount">4 Tigers</div>
+                <div>Goal: Capture 5 goats</div>
+                <div>Captured: <span id="capturedGoats">0</span> goats</div>
+            </div>
+            
+            <div class="player-info">
+                <div class="player-name goats">🐐 Goats (You)</div>
+                <div class="player-count goats" id="goatCount">20 Remaining</div>
+                <div>Goal: Trap all tigers</div>
+                <div>Placed: <span id="placedGoats">0</span>/20</div>
+            </div>
+        </div>
+        
+        <div class="game-status" id="gameStatus">Your turn! Place a goat on any empty position.</div>
+        
+        <div class="game-board-container">
+            <div class="board-wrapper">
+                <div class="game-board" id="gameBoard"></div>
+            </div>
+            
+            <div class="controls">
+                <button class="control-button" onclick="newGame()">🔄 New Game</button>
+                <button class="control-button" onclick="toggleDifficulty()">🎯 <span id="difficultyText">AI</span></button>
+                <button class="control-button" id="soundToggle" onclick="toggleSound()">🔊 Sound On</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div class="win-modal" id="winModal">
+        <div class="win-content">
+            <h2 class="win-title" id="winTitle">🎉 Congratulations! 🎉</h2>
+            <p class="win-message" id="winMessage">Victory!</p>
+            <br>
+            <button class="play-button" onclick="newGame(); closeWinModal();">Play Again</button>
+            <button class="control-button" onclick="backToMenu(); closeWinModal();" style="margin-left: 1rem;">Back to Games</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            board: Array(5).fill().map(() => Array(5).fill(null)),
+            currentPlayer: 'goat', // goat starts
+            phase: 1, // 1: placing goats, 2: moving pieces
+            goatsRemaining: 20,
+            goatsPlaced: 0,
+            capturedGoats: 0,
+            selectedPiece: null,
+            gameOver: false,
+            soundEnabled: true,
+            difficulty: 'hard' // easy, medium, hard (but display as "AI")
+        };
+
+        // Board connections - defines valid moves
+        const connections = [
+            // Row 0
+            [[0,1], [1,0], [1,1]],
+            [[0,0], [0,2], [1,1]],
+            [[0,1], [0,3], [1,1], [1,2]],
+            [[0,2], [0,4], [1,3]],
+            [[0,3], [1,4], [1,3]],
+            // Row 1
+            [[0,0], [1,1], [2,0]],
+            [[0,0], [0,1], [0,2], [1,0], [1,2], [2,0], [2,1], [2,2]],
+            [[0,2], [1,0], [1,2], [2,1]],
+            [[0,4], [1,3], [2,4]],
+            [[0,4], [1,3], [2,3], [2,4]],
+            // Row 2
+            [[1,0], [2,1], [3,0]],
+            [[1,1], [2,0], [2,2], [3,1]],
+            [[1,1], [1,3], [2,1], [2,3], [3,1], [3,2]],
+            [[1,3], [2,2], [2,4], [3,3]],
+            [[1,3], [1,4], [2,3], [3,4]],
+            // Row 3
+            [[2,0], [3,1], [4,0]],
+            [[2,1], [3,0], [3,2], [4,1]],
+            [[2,2], [3,1], [3,3], [4,2]],
+            [[2,3], [3,2], [3,4], [4,3]],
+            [[2,4], [3,3], [4,4]],
+            // Row 4
+            [[3,0], [4,1], [3,1]],
+            [[3,1], [4,0], [4,2]],
+            [[3,2], [4,1], [4,3], [3,1], [3,3]],
+            [[3,3], [4,2], [4,4]],
+            [[3,4], [4,3], [3,3]]
+        ];
+
+        function getValidMoves(row, col) {
+            const index = row * 5 + col;
+            return connections[index] || [];
+        }
+
+        // Enhanced sound effects
+        function playSound(type) {
+            if (!gameState.soundEnabled) return;
+            
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            if (type === 'goat_place') {
+                // Goat sound - soft bleating
+                playGoatSound(audioContext);
+            } else if (type === 'tiger_roar') {
+                // Tiger roar when capturing
+                playTigerRoar(audioContext);
+            } else if (type === 'move') {
+                // Simple move sound
+                playSimpleSound(audioContext, 523, 0.15);
+            } else if (type === 'victory_music') {
+                // Victory celebration music
+                playVictoryMusic(audioContext);
+            }
+        }
+
+        function playGoatSound(audioContext) {
+            // Create a goat-like bleating sound
+            const frequencies = [300, 250, 350, 280];
+            frequencies.forEach((freq, i) => {
+                setTimeout(() => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    
+                    osc.frequency.value = freq;
+                    osc.type = 'sawtooth';
+                    gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    
+                    osc.start(audioContext.currentTime);
+                    osc.stop(audioContext.currentTime + 0.1);
+                }, i * 50);
+            });
+        }
+
+        function playTigerRoar(audioContext) {
+            // Create a tiger roar sound
+            const osc1 = audioContext.createOscillator();
+            const osc2 = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc1.frequency.value = 80;
+            osc2.frequency.value = 120;
+            osc1.type = 'sawtooth';
+            osc2.type = 'square';
+            
+            gain.gain.setValueAtTime(0.4, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+            
+            // Add growling effect
+            const lfo = audioContext.createOscillator();
+            const lfoGain = audioContext.createGain();
+            lfo.connect(lfoGain);
+            lfoGain.connect(osc1.frequency);
+            lfo.frequency.value = 20;
+            lfoGain.gain.value = 30;
+            
+            osc1.start(audioContext.currentTime);
+            osc2.start(audioContext.currentTime);
+            lfo.start(audioContext.currentTime);
+            
+            osc1.stop(audioContext.currentTime + 0.8);
+            osc2.stop(audioContext.currentTime + 0.8);
+            lfo.stop(audioContext.currentTime + 0.8);
+        }
+
+        function playSimpleSound(audioContext, frequency, duration) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function playVictoryMusic(audioContext) {
+            // Victory fanfare with more elaborate melody
+            const melody = [
+                {freq: 523, time: 0, duration: 0.3},      // C5
+                {freq: 659, time: 0.3, duration: 0.3},    // E5
+                {freq: 784, time: 0.6, duration: 0.3},    // G5
+                {freq: 1047, time: 0.9, duration: 0.6},   // C6
+                {freq: 880, time: 1.5, duration: 0.3},    // A5
+                {freq: 1047, time: 1.8, duration: 0.9}    // C6
+            ];
+            
+            melody.forEach(note => {
+                setTimeout(() => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    
+                    osc.frequency.value = note.freq;
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + note.duration);
+                    
+                    osc.start(audioContext.currentTime);
+                    osc.stop(audioContext.currentTime + note.duration);
+                }, note.time * 1000);
+            });
+        }
+
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            const button = document.getElementById('soundToggle');
+            button.textContent = gameState.soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+        }
+
+        function toggleDifficulty() {
+            const difficulties = ['easy', 'medium', 'hard'];
+            const currentIndex = difficulties.indexOf(gameState.difficulty);
+            const nextIndex = (currentIndex + 1) % difficulties.length;
+            gameState.difficulty = difficulties[nextIndex];
+            
+            // Always show "AI" regardless of difficulty
+            const difficultyText = document.getElementById('difficultyText');
+            difficultyText.textContent = 'AI';
+        }
+
+        function getAIDepth() {
+            switch(gameState.difficulty) {
+                case 'easy': return 3;
+                case 'medium': return 4;
+                case 'hard': return 5;
+                default: return 5;
+            }
+        }
+
+        function startGame() {
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'block';
+            initializeGame();
+        }
+
+        function backToMenu() {
+            window.location.href = 'index.html';
+        }
+
+        function initializeGame() {
+            // Preserve sound and difficulty settings
+            const preservedSoundEnabled = gameState.soundEnabled;
+            const preservedDifficulty = gameState.difficulty;
+            
+            // Reset game state
+            gameState = {
+                board: Array(5).fill().map(() => Array(5).fill(null)),
+                currentPlayer: 'goat',
+                phase: 1,
+                goatsRemaining: 20,
+                goatsPlaced: 0,
+                capturedGoats: 0,
+                selectedPiece: null,
+                gameOver: false,
+                soundEnabled: preservedSoundEnabled,
+                difficulty: preservedDifficulty
+            };
+
+            // Place tigers on corners
+            gameState.board[0][0] = 'tiger';
+            gameState.board[0][4] = 'tiger';
+            gameState.board[4][0] = 'tiger';
+            gameState.board[4][4] = 'tiger';
+
+            createBoard();
+            updateUI();
+        }
+
+        function createBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+
+            // Check if mobile
+            const isMobile = window.innerWidth <= 768;
+            const spacing = isMobile ? 94 : 125;
+            const offset = isMobile ? 38 : 50;
+
+            // Draw lines first
+            drawLines(board, isMobile);
+
+            // Create points
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    const point = document.createElement('div');
+                    point.className = 'board-point';
+                    point.style.left = (col * spacing + offset) + 'px';
+                    point.style.top = (row * spacing + offset) + 'px';
+                    point.dataset.row = row;
+                    point.dataset.col = col;
+                    
+                    point.addEventListener('click', () => handlePointClick(row, col));
+                    
+                    board.appendChild(point);
+                    
+                    // Add piece if exists
+                    if (gameState.board[row][col]) {
+                        addPiece(point, gameState.board[row][col]);
+                    }
+                }
+            }
+        }
+
+        function drawLines(board, isMobile = false) {
+            const spacing = isMobile ? 94 : 125;  
+            const boardOffset = isMobile ? 38 : 50;
+            const pointRadius = isMobile ? 20 : 25; // Half of point size
+            
+            // Centers of the 5x5 grid points - these are the exact centers of each point
+            const centers = [];
+            for (let i = 0; i < 5; i++) {
+                centers.push(boardOffset + pointRadius + (i * spacing));
+            }
+            
+            const lineThickness = 3;
+            
+            // Helper function to create a line element
+            const createLine = (x1, y1, x2, y2) => {
+                const line = document.createElement('div');
+                line.className = 'board-line';
+                line.style.position = 'absolute';
+                line.style.backgroundColor = '#FFD700';
+                line.style.opacity = '0.8';
+                line.style.boxShadow = '0 0 5px rgba(255, 215, 0, 0.5)';
+                
+                const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                
+                line.style.width = length + 'px';
+                line.style.height = lineThickness + 'px';
+                line.style.left = x1 + 'px';
+                line.style.top = y1 - lineThickness/2 + 'px';
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.transformOrigin = '0 50%';
+                
+                board.appendChild(line);
+            };
+            
+            // Draw horizontal lines
+            for (let row = 0; row < 5; row++) {
+                createLine(centers[0], centers[row], centers[4], centers[row]);
+            }
+            
+            // Draw vertical lines
+            for (let col = 0; col < 5; col++) {
+                createLine(centers[col], centers[0], centers[col], centers[4]);
+            }
+            
+            // Draw diagonal lines
+            // Main diagonals (corner to corner)
+            createLine(centers[0], centers[0], centers[4], centers[4]);
+            createLine(centers[4], centers[0], centers[0], centers[4]);
+            
+            // Inner square diagonals
+            createLine(centers[1], centers[1], centers[3], centers[3]);
+            createLine(centers[3], centers[1], centers[1], centers[3]);
+            
+            // Edge middle to side middle lines
+            createLine(centers[2], centers[0], centers[4], centers[2]);
+            createLine(centers[2], centers[0], centers[0], centers[2]);
+            createLine(centers[2], centers[4], centers[4], centers[2]);
+            createLine(centers[2], centers[4], centers[0], centers[2]);
+        }
+
+        function addPiece(point, type) {
+            const piece = document.createElement('div');
+            piece.className = `piece ${type}`;
+            piece.textContent = type === 'tiger' ? '🐅' : '🐐';
+            
+            if (type === 'tiger') {
+                piece.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (gameState.phase === 2 && gameState.currentPlayer === 'tiger') {
+                        selectPiece(parseInt(point.dataset.row), parseInt(point.dataset.col));
+                    }
+                });
+            } else if (type === 'goat' && gameState.phase === 2) {
+                piece.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (gameState.currentPlayer === 'goat') {
+                        selectPiece(parseInt(point.dataset.row), parseInt(point.dataset.col));
+                    }
+                });
+            }
+            
+            point.appendChild(piece);
+        }
+
+        function handlePointClick(row, col) {
+            if (gameState.gameOver) return;
+
+            if (gameState.phase === 1 && gameState.currentPlayer === 'goat') {
+                // Phase 1: Place goat
+                if (!gameState.board[row][col]) {
+                    placeGoat(row, col);
+                }
+            } else if (gameState.phase === 2) {
+                if (gameState.selectedPiece) {
+                    // Try to move selected piece
+                    attemptMove(gameState.selectedPiece.row, gameState.selectedPiece.col, row, col);
+                }
+            }
+        }
+
+        function placeGoat(row, col) {
+            if (gameState.gameOver) return;
+            
+            gameState.board[row][col] = 'goat';
+            gameState.goatsRemaining--;
+            gameState.goatsPlaced++;
+            
+            playSound('goat_place');
+            createBoard();
+            updateUI();
+
+            if (gameState.goatsRemaining === 0) {
+                gameState.phase = 2;
+                updatePhaseIndicator();
+            }
+
+            // Check win conditions (in case tigers are already trapped)
+            if (checkWinCondition()) {
+                return;
+            }
+
+            // Switch to tiger's turn
+            gameState.currentPlayer = 'tiger';
+            updateGameStatus();
+
+            // Tiger's turn (AI)
+            setTimeout(() => {
+                if (!gameState.gameOver) {
+                    makeAIMove();
+                }
+            }, 800);
+        }
+
+        function selectPiece(row, col) {
+            // Clear previous selection
+            document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
+            document.querySelectorAll('.board-point').forEach(p => p.classList.remove('valid-move'));
+
+            const piece = gameState.board[row][col];
+            if (piece === gameState.currentPlayer) {
+                gameState.selectedPiece = { row, col };
+                
+                // Highlight selected piece
+                const point = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                const pieceElement = point.querySelector('.piece');
+                if (pieceElement) {
+                    pieceElement.classList.add('selected');
+                }
+
+                // Show valid moves
+                const validMoves = getValidMovesForPiece(row, col);
+                validMoves.forEach(([moveRow, moveCol]) => {
+                    const movePoint = document.querySelector(`[data-row="${moveRow}"][data-col="${moveCol}"]`);
+                    if (movePoint) {
+                        movePoint.classList.add('valid-move');
+                    }
+                });
+            }
+        }
+
+        function getValidMovesForPiece(row, col) {
+            const piece = gameState.board[row][col];
+            const moves = [];
+            const connections = getValidMoves(row, col);
+
+            for (const [moveRow, moveCol] of connections) {
+                if (piece === 'tiger') {
+                    // Tigers can move to empty spots or capture goats
+                    if (!gameState.board[moveRow][moveCol]) {
+                        moves.push([moveRow, moveCol]);
+                    } else if (gameState.board[moveRow][moveCol] === 'goat') {
+                        // Check if tiger can jump over goat
+                        const jumpRow = moveRow + (moveRow - row);
+                        const jumpCol = moveCol + (moveCol - col);
+                        if (jumpRow >= 0 && jumpRow < 5 && jumpCol >= 0 && jumpCol < 5 && !gameState.board[jumpRow][jumpCol]) {
+                            moves.push([jumpRow, jumpCol]);
+                        }
+                    }
+                } else if (piece === 'goat') {
+                    // Goats can only move to adjacent empty spots
+                    if (!gameState.board[moveRow][moveCol]) {
+                        moves.push([moveRow, moveCol]);
+                    }
+                }
+            }
+
+            return moves;
+        }
+
+        function attemptMove(fromRow, fromCol, toRow, toCol) {
+            if (gameState.gameOver) return;
+            
+            const piece = gameState.board[fromRow][fromCol];
+            const validMoves = getValidMovesForPiece(fromRow, fromCol);
+            
+            const isValid = validMoves.some(([row, col]) => row === toRow && col === toCol);
+            
+            if (isValid) {
+                // Check if it's a capture move for tigers
+                let captured = false;
+                if (piece === 'tiger') {
+                    const midRow = (fromRow + toRow) / 2;
+                    const midCol = (fromCol + toCol) / 2;
+                    if (Number.isInteger(midRow) && Number.isInteger(midCol) && gameState.board[midRow][midCol] === 'goat') {
+                        gameState.board[midRow][midCol] = null;
+                        gameState.capturedGoats++;
+                        captured = true;
+                    }
+                }
+
+                // Move piece
+                gameState.board[fromRow][fromCol] = null;
+                gameState.board[toRow][toCol] = piece;
+                gameState.selectedPiece = null;
+
+                playSound(captured ? 'tiger_roar' : 'move');
+                createBoard();
+                updateUI();
+
+                // Check win conditions after each move
+                if (checkWinCondition()) {
+                    return;
+                }
+
+                // Switch players
+                gameState.currentPlayer = gameState.currentPlayer === 'tiger' ? 'goat' : 'tiger';
+                updateGameStatus();
+
+                // If it's tiger's turn, make AI move
+                if (gameState.currentPlayer === 'tiger' && !gameState.gameOver) {
+                    setTimeout(() => {
+                        if (!gameState.gameOver) {
+                            makeAIMove();
+                        }
+                    }, 800);
+                }
+            } else {
+                // Invalid move, clear selection
+                gameState.selectedPiece = null;
+                document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
+                document.querySelectorAll('.board-point').forEach(p => p.classList.remove('valid-move'));
+            }
+        }
+
+        // Improved AI using minimax algorithm
+        function makeAIMove() {
+            if (gameState.gameOver) return;
+            
+            const bestMove = findBestMove();
+            if (bestMove && bestMove.type === 'move') {
+                // Execute the move
+                attemptMove(bestMove.fromRow, bestMove.fromCol, bestMove.toRow, bestMove.toCol);
+            } else {
+                // No valid moves available - this might be a win condition for goats
+                if (!gameState.gameOver) {
+                    setTimeout(() => {
+                        checkWinCondition();
+                    }, 100);
+                }
+            }
+        }
+
+        function findBestMove() {
+            let bestScore = -Infinity;
+            let bestMove = null;
+            const searchDepth = getAIDepth();
+            
+            // First, check for immediate captures - these should ALWAYS be prioritized
+            const captureMove = findImmediateCapture();
+            if (captureMove) {
+                return captureMove; // Always take captures immediately
+            }
+            
+            // If no immediate capture, use minimax to find best move
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    if (gameState.board[row][col] === 'tiger') {
+                        const moves = getValidMovesForPiece(row, col);
+                        for (const [toRow, toCol] of moves) {
+                            // Simulate move
+                            const moveData = simulateMove(row, col, toRow, toCol);
+                            
+                            const score = minimax(searchDepth, false, -Infinity, Infinity);
+                            
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestMove = {
+                                    type: 'move',
+                                    fromRow: row,
+                                    fromCol: col,
+                                    toRow: toRow,
+                                    toCol: toCol
+                                };
+                            }
+                            
+                            // Restore board
+                            restoreMove(moveData);
+                        }
+                    }
+                }
+            }
+            
+            return bestMove;
+        }
+
+        function findImmediateCapture() {
+            // Look for any tiger that can capture a goat right now
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    if (gameState.board[row][col] === 'tiger') {
+                        const connections = getValidMoves(row, col);
+                        
+                        for (const [adjRow, adjCol] of connections) {
+                            if (gameState.board[adjRow][adjCol] === 'goat') {
+                                const jumpRow = adjRow + (adjRow - row);
+                                const jumpCol = adjCol + (adjCol - col);
+                                
+                                if (jumpRow >= 0 && jumpRow < 5 && jumpCol >= 0 && jumpCol < 5 && !gameState.board[jumpRow][jumpCol]) {
+                                    // Found an immediate capture!
+                                    return {
+                                        type: 'move',
+                                        fromRow: row,
+                                        fromCol: col,
+                                        toRow: jumpRow,
+                                        toCol: jumpCol
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null; // No immediate captures available
+        }
+
+        function simulateMove(fromRow, fromCol, toRow, toCol) {
+            const originalBoard = gameState.board.map(row => [...row]);
+            const originalCaptured = gameState.capturedGoats;
+            
+            // Check if it's a capture
+            const midRow = (fromRow + toRow) / 2;
+            const midCol = (fromCol + toCol) / 2;
+            let capturedGoat = false;
+            if (Number.isInteger(midRow) && Number.isInteger(midCol) && gameState.board[midRow][midCol] === 'goat') {
+                gameState.board[midRow][midCol] = null;
+                gameState.capturedGoats++;
+                capturedGoat = true;
+            }
+            
+            gameState.board[fromRow][fromCol] = null;
+            gameState.board[toRow][toCol] = 'tiger';
+            
+            return { originalBoard, originalCaptured, capturedGoat, midRow, midCol };
+        }
+
+        function restoreMove(moveData) {
+            gameState.board = moveData.originalBoard;
+            gameState.capturedGoats = moveData.originalCaptured;
+        }
+
+        function minimax(depth, isMaximizing, alpha, beta) {
+            // Check terminal states
+            if (gameState.capturedGoats >= 5) {
+                return 1000 + depth; // Tigers win, prefer faster wins
+            }
+            
+            if (!canTigersMove()) {
+                return -1000 - depth; // Goats win, avoid slower losses
+            }
+            
+            if (depth === 0) {
+                return evaluateBoard();
+            }
+            
+            if (isMaximizing) {
+                let maxScore = -Infinity;
+                
+                // Tiger moves
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        if (gameState.board[row][col] === 'tiger') {
+                            const moves = getValidMovesForPiece(row, col);
+                            for (const [toRow, toCol] of moves) {
+                                const moveData = simulateMove(row, col, toRow, toCol);
+                                const score = minimax(depth - 1, false, alpha, beta);
+                                maxScore = Math.max(maxScore, score);
+                                alpha = Math.max(alpha, score);
+                                restoreMove(moveData);
+                                
+                                if (beta <= alpha) break;
+                            }
+                            if (beta <= alpha) break;
+                        }
+                    }
+                    if (beta <= alpha) break;
+                }
+                return maxScore;
+            } else {
+                let minScore = Infinity;
+                
+                // Goat moves (only in phase 2)
+                if (gameState.phase === 2) {
+                    for (let row = 0; row < 5; row++) {
+                        for (let col = 0; col < 5; col++) {
+                            if (gameState.board[row][col] === 'goat') {
+                                const moves = getValidMovesForPiece(row, col);
+                                for (const [toRow, toCol] of moves) {
+                                    const originalBoard = gameState.board.map(row => [...row]);
+                                    gameState.board[row][col] = null;
+                                    gameState.board[toRow][toCol] = 'goat';
+                                    
+                                    const score = minimax(depth - 1, true, alpha, beta);
+                                    minScore = Math.min(minScore, score);
+                                    beta = Math.min(beta, score);
+                                    
+                                    gameState.board = originalBoard;
+                                    
+                                    if (beta <= alpha) break;
+                                }
+                                if (beta <= alpha) break;
+                            }
+                        }
+                        if (beta <= alpha) break;
+                    }
+                }
+                return minScore;
+            }
+        }
+
+        function canTigersMove() {
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    if (gameState.board[row][col] === 'tiger') {
+                        if (getValidMovesForPiece(row, col).length > 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function evaluateBoard() {
+            let score = 0;
+            
+            // Captured goats are EXTREMELY valuable - exponential scoring
+            score += gameState.capturedGoats * 500;
+            score += Math.pow(gameState.capturedGoats, 3) * 200; // Exponential bonus
+            
+            // Count pieces on board
+            let goatsOnBoard = 0;
+            let tigerPositions = [];
+            let goatPositions = [];
+            
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    if (gameState.board[row][col] === 'goat') {
+                        goatsOnBoard++;
+                        goatPositions.push([row, col]);
+                    } else if (gameState.board[row][col] === 'tiger') {
+                        tigerPositions.push([row, col]);
+                    }
+                }
+            }
+            
+            // Evaluate each tiger's potential
+            let totalTigerMobility = 0;
+            let immediateCaptureOpportunities = 0;
+            let multiCaptureOpportunities = 0;
+            let threatPositions = 0;
+            let centerControl = 0;
+            
+            for (const [row, col] of tigerPositions) {
+                const moves = getValidMovesForPiece(row, col);
+                totalTigerMobility += moves.length;
+                
+                // Count immediate capture opportunities with MASSIVE bonuses
+                const connections = getValidMoves(row, col);
+                let captureCount = 0;
+                let threatenedGoats = 0;
+                
+                for (const [adjRow, adjCol] of connections) {
+                    if (gameState.board[adjRow][adjCol] === 'goat') {
+                        threatenedGoats++;
+                        const jumpRow = adjRow + (adjRow - row);
+                        const jumpCol = adjCol + (adjCol - col);
+                        
+                        if (jumpRow >= 0 && jumpRow < 5 && jumpCol >= 0 && jumpCol < 5 && !gameState.board[jumpRow][jumpCol]) {
+                            captureCount++;
+                            immediateCaptureOpportunities += 1000; // MASSIVE bonus for immediate captures
+                        }
+                    }
+                }
+                
+                // Huge bonus for multiple capture opportunities from one position
+                if (captureCount >= 2) {
+                    multiCaptureOpportunities += 2000; // Fork attacks are game-changing
+                    score += 1500;
+                } else if (captureCount === 1) {
+                    score += 800; // Single captures are very valuable
+                }
+                
+                // Bonus for threatening multiple goats (even without immediate capture)
+                if (threatenedGoats >= 3) {
+                    threatPositions += 200;
+                } else if (threatenedGoats === 2) {
+                    threatPositions += 100;
+                } else if (threatenedGoats === 1) {
+                    threatPositions += 30;
+                }
+                
+                // Strategic positioning
+                if (row === 2 && col === 2) {
+                    centerControl += 80; // Center is very powerful
+                } else if ((row === 1 || row === 2 || row === 3) && (col === 1 || col === 2 || col === 3)) {
+                    centerControl += 40; // Inner positions are good
+                }
+                
+                // Bonus for aggressive positioning (closer to goats)
+                let proximityToGoats = 0;
+                for (const [gRow, gCol] of goatPositions) {
+                    const distance = Math.abs(row - gRow) + Math.abs(col - gCol);
+                    if (distance === 1) {
+                        proximityToGoats += 50; // Very close to goats
+                    } else if (distance === 2) {
+                        proximityToGoats += 20; // Moderately close
+                    }
+                }
+                score += proximityToGoats;
+            }
+            
+            // Mobility is important but not as much as captures
+            score += totalTigerMobility * 15;
+            score += immediateCaptureOpportunities;
+            score += multiCaptureOpportunities;  
+            score += centerControl;
+            score += threatPositions;
+            
+            // Evaluate goat weaknesses
+            let isolatedGoats = 0;
+            let vulnerableGoats = 0;
+            
+            for (const [gRow, gCol] of goatPositions) {
+                let adjacentGoats = 0;
+                let adjacentToTiger = false;
+                
+                const goatConnections = getValidMoves(gRow, gCol);
+                for (const [adjRow, adjCol] of goatConnections) {
+                    if (gameState.board[adjRow][adjCol] === 'goat') {
+                        adjacentGoats++;
+                    }
+                    if (gameState.board[adjRow][adjCol] === 'tiger') {
+                        adjacentToTiger = true;
+                    }
+                }
+                
+                // Isolated goats are easier targets
+                if (adjacentGoats === 0) {
+                    isolatedGoats++;
+                    score += 100;
+                }
+                
+                // Goats adjacent to tigers are vulnerable
+                if (adjacentToTiger) {
+                    vulnerableGoats++;
+                    score += 50;
+                }
+                
+                // Goats in corners or edges with few connections are weaker
+                if ((gRow === 0 || gRow === 4) && (gCol === 0 || gCol === 4)) {
+                    score += 30; // Corner goats are easier to trap
+                }
+            }
+            
+            // Endgame adjustments
+            if (gameState.capturedGoats >= 3) {
+                // In endgame, prioritize finishing the job
+                score += immediateCaptureOpportunities * 2;
+                score += totalTigerMobility * 25;
+            }
+            
+            // Phase-specific bonuses
+            if (gameState.phase === 1) {
+                // In placement phase, establish good positions
+                score += centerControl * 2;
+                score += threatPositions * 1.5;
+            } else {
+                // In movement phase, be aggressive
+                score += immediateCaptureOpportunities * 1.5;
+                score += multiCaptureOpportunities * 1.3;
+            }
+            
+            // Penalty for letting goats form defensive walls
+            score -= calculateGoatWallStrength(goatPositions) * 40;
+            
+            // Tiger coordination bonus
+            score += calculateTigerCoordination(tigerPositions) * 25;
+            
+            return score;
+        }
+
+        function calculateTigerCoordination(tigerPositions) {
+            let coordination = 0;
+            
+            for (let i = 0; i < tigerPositions.length; i++) {
+                for (let j = i + 1; j < tigerPositions.length; j++) {
+                    const [r1, c1] = tigerPositions[i];
+                    const [r2, c2] = tigerPositions[j];
+                    const distance = Math.abs(r1 - r2) + Math.abs(c1 - c2);
+                    
+                    // Optimal distance is 2-3 spaces (close enough to coordinate, not too crowded)
+                    if (distance >= 2 && distance <= 3) {
+                        coordination += 10;
+                    } else if (distance === 1) {
+                        coordination += 5; // Too close but still okay
+                    } else if (distance >= 4) {
+                        coordination -= 2; // Too far apart
+                    }
+                }
+            }
+            
+            return coordination;
+        }
+
+        function calculateGoatWallStrength(goatPositions) {
+            let wallStrength = 0;
+            
+            // Check for horizontal and vertical walls
+            const rows = {};
+            const cols = {};
+            
+            goatPositions.forEach(([row, col]) => {
+                if (!rows[row]) rows[row] = [];
+                if (!cols[col]) cols[col] = [];
+                rows[row].push(col);
+                cols[col].push(row);
+            });
+            
+            // Count continuous walls
+            Object.values(rows).forEach(colArray => {
+                colArray.sort((a, b) => a - b);
+                let continuous = 1;
+                for (let i = 1; i < colArray.length; i++) {
+                    if (colArray[i] === colArray[i-1] + 1) {
+                        continuous++;
+                    } else {
+                        if (continuous >= 3) wallStrength += continuous * 2;
+                        continuous = 1;
+                    }
+                }
+                if (continuous >= 3) wallStrength += continuous * 2;
+            });
+            
+            Object.values(cols).forEach(rowArray => {
+                rowArray.sort((a, b) => a - b);
+                let continuous = 1;
+                for (let i = 1; i < rowArray.length; i++) {
+                    if (rowArray[i] === rowArray[i-1] + 1) {
+                        continuous++;
+                    } else {
+                        if (continuous >= 3) wallStrength += continuous * 2;
+                        continuous = 1;
+                    }
+                }
+                if (continuous >= 3) wallStrength += continuous * 2;
+            });
+            
+            return wallStrength;
+        }
+
+        function checkWinCondition() {
+            // Check if tigers won (captured 5 goats)
+            if (gameState.capturedGoats >= 5) {
+                setTimeout(() => {
+                    showWinModal('Tigers Win!', 'The tigers have successfully captured 5 goats!');
+                }, 300);
+                return true;
+            }
+
+            // Check if goats won (no tiger can move)
+            if (gameState.phase === 2 || gameState.goatsRemaining === 0) { // Only check this in phase 2 or when all goats are placed
+                let tigersCanMove = false;
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        if (gameState.board[row][col] === 'tiger') {
+                            if (getValidMovesForPiece(row, col).length > 0) {
+                                tigersCanMove = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (tigersCanMove) break;
+                }
+
+                if (!tigersCanMove) {
+                    setTimeout(() => {
+                        showWinModal('Goats Win!', 'The goats have successfully trapped all tigers!');
+                    }, 300);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function showWinModal(winner, message) {
+            if (gameState.gameOver) return; // Prevent multiple win modals
+            
+            gameState.gameOver = true;
+            
+            // Clear any existing confetti first
+            const modal = document.getElementById('winModal');
+            const existingConfetti = modal.querySelectorAll('.confetti');
+            existingConfetti.forEach(piece => piece.remove());
+            
+            // Update the modal content with proper winner display
+            const titleElement = document.getElementById('winTitle');
+            const messageElement = document.getElementById('winMessage');
+            
+            if (winner.includes('Tigers')) {
+                titleElement.innerHTML = '🐅 Congratulations!<br>Tigers Won! 🐅';
+                titleElement.style.color = '#FF6B35';
+            } else {
+                titleElement.innerHTML = '🐐 Congratulations!<br>Goats Won! 🐐';
+                titleElement.style.color = '#90EE90';
+            }
+            
+            messageElement.textContent = message;
+            
+            // Show the modal
+            modal.style.display = 'flex';
+            
+            // Create confetti effect after a short delay
+            setTimeout(() => {
+                createConfetti();
+            }, 100);
+            
+            // Play victory music
+            setTimeout(() => {
+                playSound('victory_music');
+            }, 200);
+        }
+
+        function createConfetti() {
+            const modal = document.getElementById('winModal');
+            
+            // Create multiple confetti pieces
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.animationDelay = Math.random() * 1 + 's';
+                    
+                    // Random colors for confetti
+                    const colors = ['#FFD700', '#FF6B35', '#90EE90', '#87CEEB', '#DDA0DD', '#FFA500'];
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    modal.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        if (confetti.parentNode) {
+                            confetti.parentNode.removeChild(confetti);
+                        }
+                    }, 6000);
+                }, i * 50);
+            }
+        }
+
+        function closeWinModal() {
+            const modal = document.getElementById('winModal');
+            modal.style.display = 'none';
+            
+            // Clear any remaining confetti
+            const confetti = modal.querySelectorAll('.confetti');
+            confetti.forEach(piece => piece.remove());
+        }
+
+        function updateUI() {
+            document.getElementById('tigerCount').textContent = '4 Tigers';
+            document.getElementById('capturedGoats').textContent = gameState.capturedGoats;
+            document.getElementById('goatCount').textContent = `${gameState.goatsRemaining} Remaining`;
+            document.getElementById('placedGoats').textContent = gameState.goatsPlaced;
+        }
+
+        function updatePhaseIndicator() {
+            const indicator = document.getElementById('phaseIndicator');
+            indicator.textContent = gameState.phase === 1 ? 'Phase 1: Placing Goats' : 'Phase 2: Moving Pieces';
+        }
+
+        function updateGameStatus() {
+            const status = document.getElementById('gameStatus');
+            
+            if (gameState.gameOver) return;
+            
+            if (gameState.phase === 1) {
+                if (gameState.currentPlayer === 'goat') {
+                    status.textContent = 'Your turn! Place a goat on any empty position.';
+                } else {
+                    status.textContent = 'AI turn... The computer is thinking.';
+                }
+            } else {
+                if (gameState.currentPlayer === 'goat') {
+                    status.textContent = 'Your turn! Click a goat to select it, then click where to move.';
+                } else {
+                    status.textContent = 'AI turn... The computer is making its move.';
+                }
+            }
+        }
+
+        function newGame() {
+            closeWinModal();
+            initializeGame();
+        }
+
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize difficulty display to show "AI"
+            document.getElementById('difficultyText').textContent = 'AI';
+        });
+
+        // Handle window resize for responsive design
+        window.addEventListener('resize', () => {
+            if (document.getElementById('gameContainer').style.display !== 'none') {
+                createBoard();
+            }
+        });
+    </script>
+</body>
+</html>
