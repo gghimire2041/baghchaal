@@ -1,1 +1,1399 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mankala - Ancient African Strategy Game</title>
+    <meta name="description" content="Experience the wisdom of Africa through Mankala - the ancient strategy game of sowing and harvesting that has captivated minds for over 3,000 years!">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 30%, #CD853F 60%, #DEB887 100%);
+            color: #2F1B14;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .african-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(45deg, #B22222 0px, #B22222 20px, transparent 20px, transparent 40px),
+                repeating-linear-gradient(-45deg, #FFD700 0px, #FFD700 15px, transparent 15px, transparent 30px);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .tribal-decorations {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .tribal-symbol {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.05;
+            color: #654321;
+            animation: float 8s ease-in-out infinite;
+            user-select: none;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(45deg, #4A90E2, #357ABD);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            z-index: 100;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+        }
+        
+        .game-container {
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .game-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .game-title {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            color: #B22222;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(178, 34, 34, 0.5);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 30px rgba(178, 34, 34, 0.5); }
+            to { text-shadow: 0 0 40px rgba(178, 34, 34, 0.8), 0 0 60px rgba(178, 34, 34, 0.3); }
+        }
+        
+        .game-subtitle {
+            font-size: 1.5rem;
+            color: #1E3A8A;
+            margin-bottom: 2rem;
+            font-style: italic;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cultural-info {
+            max-width: 900px;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(178, 34, 34, 0.1) 100%);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 3px solid rgba(139, 69, 19, 0.3);
+            color: #2F1B14;
+            line-height: 1.8;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cultural-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #B22222, #FFD700, #228B22, #B22222);
+            animation: tribalBorder 3s ease-in-out infinite;
+        }
+        
+        @keyframes tribalBorder {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+        }
+        
+        .score-display {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.2), rgba(160, 82, 45, 0.2));
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(139, 69, 19, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .player-score {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .score-label {
+            font-size: 1.1rem;
+            color: #8B4513;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .player-score.human { color: #B22222; }
+        .player-score.ai { color: #228B22; }
+        
+        .mankala-board {
+            width: 800px;
+            max-width: 95vw;
+            height: 320px;
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 0 30px rgba(0, 0, 0, 0.3);
+            border: 6px solid #654321;
+            position: relative;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        
+        .mankala-board::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            border-radius: 20px;
+            pointer-events: none;
+        }
+        
+        .store {
+            width: 70px;
+            height: 180px;
+            background: radial-gradient(ellipse, #DEB887, #CD853F);
+            border-radius: 35px;
+            border: 4px solid #8B4513;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2F1B14;
+            box-shadow: 
+                inset 0 8px 16px rgba(0, 0, 0, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .pits-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+        }
+        
+        .pit-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .pit {
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, #DEB887, #CD853F);
+            border-radius: 50%;
+            border: 3px solid #8B4513;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #2F1B14;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                inset 0 3px 10px rgba(0, 0, 0, 0.3),
+                0 3px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .pit::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .pit:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                inset 0 4px 12px rgba(0, 0, 0, 0.3),
+                0 6px 20px rgba(255, 215, 0, 0.4);
+            border-color: #FFD700;
+        }
+        
+        .pit.selectable {
+            animation: pulseGlow 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 
+                    inset 0 4px 12px rgba(0, 0, 0, 0.3),
+                    0 4px 12px rgba(0, 0, 0, 0.2);
+            }
+            50% { 
+                box-shadow: 
+                    inset 0 4px 12px rgba(0, 0, 0, 0.3),
+                    0 8px 25px rgba(255, 215, 0, 0.6);
+                border-color: #FFD700;
+            }
+        }
+        
+        .pit.ai-side {
+            cursor: not-allowed;
+        }
+        
+        .seeds {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            gap: 2px;
+            pointer-events: none;
+            position: relative;
+        }
+        
+        .seed {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #1E3A8A;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            animation: seedPlace 0.3s ease-out;
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+        
+        .seed.light-blue {
+            background: radial-gradient(circle at 30% 30%, #93C5FD, #60A5FA);
+        }
+        
+        .seed.medium-blue {
+            background: radial-gradient(circle at 30% 30%, #3B82F6, #2563EB);
+        }
+        
+        .seed.dark-blue {
+            background: radial-gradient(circle at 30% 30%, #1D4ED8, #1E40AF);
+        }
+        
+        .seed.deep-blue {
+            background: radial-gradient(circle at 30% 30%, #1E3A8A, #1E40AF);
+        }
+        
+        @keyframes seedPlace {
+            0% { transform: scale(0) rotate(180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .seed.moving {
+            animation: seedFly 0.6s ease-in-out;
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        @keyframes seedFly {
+            0% { 
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            50% { 
+                transform: translate(-50%, -80px) scale(1.3) rotate(180deg);
+                opacity: 0.8;
+                box-shadow: 0 8px 20px rgba(59, 130, 246, 0.6);
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1) rotate(360deg);
+                opacity: 1;
+            }
+        }
+        
+        .pit.sowing-highlight {
+            border-color: #FFD700;
+            box-shadow: 
+                inset 0 3px 8px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(255, 215, 0, 0.8);
+            animation: sowingPulse 0.3s ease-in-out;
+        }
+        
+        @keyframes sowingPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .store.sowing-highlight {
+            border-color: #FFD700;
+            box-shadow: 
+                inset 0 6px 14px rgba(0, 0, 0, 0.3),
+                0 0 25px rgba(255, 215, 0, 0.8);
+            animation: sowingPulse 0.3s ease-in-out;
+        }
+        
+        .game-status {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            max-width: 700px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            color: #2F1B14;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .control-button {
+            background: linear-gradient(45deg, #B22222, #8B0000);
+            border: none;
+            padding: 12px 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(178, 34, 34, 0.3);
+            font-size: 1rem;
+        }
+        
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(178, 34, 34, 0.5);
+        }
+        
+        .control-button.secondary {
+            background: linear-gradient(45deg, #228B22, #006400);
+            box-shadow: 0 4px 15px rgba(34, 139, 34, 0.3);
+        }
+        
+        .control-button.secondary:hover {
+            box-shadow: 0 6px 20px rgba(34, 139, 34, 0.5);
+        }
+        
+        .win-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+        
+        .win-content {
+            background: linear-gradient(135deg, #DEB887 0%, #CD853F 100%);
+            padding: 3rem;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            border: 4px solid #8B4513;
+            animation: modalAppear 0.6s ease-out;
+            min-width: 450px;
+            color: #2F1B14;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes modalAppear {
+            0% { transform: scale(0.3) rotate(10deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .win-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #B22222;
+            animation: titleCelebration 1s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleCelebration {
+            from { 
+                transform: scale(1);
+                text-shadow: 0 0 20px rgba(178, 34, 34, 0.5);
+            }
+            to { 
+                transform: scale(1.05);
+                text-shadow: 0 0 30px rgba(178, 34, 34, 0.8), 0 0 50px rgba(178, 34, 34, 0.3);
+            }
+        }
+        
+        .win-message {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .celebration-seeds {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle at 30% 30%, #3B82F6, #2563EB);
+            border: 2px solid #1E3A8A;
+            border-radius: 50%;
+            animation: celebrationFall 3s linear infinite;
+        }
+        
+        @keyframes celebrationFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.5rem;
+            }
+            
+            .mankala-board {
+                width: 95vw;
+                max-width: 500px;
+                height: 250px;
+                padding: 15px;
+                gap: 10px;
+            }
+            
+            .store {
+                width: 50px;
+                height: 140px;
+                font-size: 1.4rem;
+                border-radius: 25px;
+            }
+            
+            .pits-container {
+                gap: 10px;
+            }
+            
+            .pit {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                border: 2px solid #8B4513;
+            }
+            
+            .pit-row {
+                gap: 6px;
+            }
+            
+            .seed {
+                width: 16px;
+                height: 16px;
+                border: 1px solid #1E3A8A;
+            }
+            
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .cultural-info {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .score-display {
+                margin: 1rem;
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .mankala-board {
+                height: 200px;
+                padding: 10px;
+                gap: 8px;
+            }
+            
+            .store {
+                width: 40px;
+                height: 120px;
+                font-size: 1.2rem;
+            }
+            
+            .pit {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .pit-row {
+                gap: 4px;
+            }
+            
+            .seed {
+                width: 12px;
+                height: 12px;
+                border: 1px solid #1E3A8A;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="african-pattern"></div>
+    <div class="tribal-decorations" id="tribalDecorations"></div>
+    
+    <button class="back-button" onclick="backToMenu()">← Back to Games</button>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">Mankala</h1>
+            <p class="game-subtitle">Ancient African Strategy Game of Sowing & Harvesting</p>
+        </div>
+        
+        <div class="cultural-info">
+            <strong>🌍 Sacred Wisdom of Africa:</strong> Mankala, from the Arabic "naqala" meaning "to move," is one of the world's oldest board games, with evidence dating back over 3,000 years. This ancient game represents a village, where each pit is a "hut" and the seeds represent different aspects of life - single seeds are "women" or "widows," pairs are "married couples," and larger groups represent "chiefs," "children," and "cattle."<br><br>
+            <strong>🎯 The Art of Strategy:</strong> Players take turns sowing seeds counter-clockwise around the board. Capture your opponent's seeds by landing your last seed in an empty pit on your side while the opposite pit contains seeds. The movement from left (feminine) to right (masculine) symbolizes the journey from west to east, following ancient African spiritual traditions. Victory comes to those who harvest the most seeds!
+        </div>
+        
+        <div class="score-display">
+            <div class="player-score human">
+                <div class="score-label">🔴 You</div>
+                <div class="score-value" id="humanScore">0</div>
+            </div>
+            <div class="player-score ai">
+                <div class="score-label">🟢 AI</div>
+                <div class="score-value" id="aiScore">0</div>
+            </div>
+        </div>
+        
+        <div class="game-status" id="gameStatus">
+            Welcome to Mankala! Click on any pit on your side to begin sowing seeds.
+        </div>
+        
+        <div class="mankala-board" id="board">
+            <!-- AI Store (Left) -->
+            <div class="store left" id="store-ai">
+                <div class="seeds" id="seeds-store-ai"></div>
+            </div>
+            
+            <!-- Pits Container -->
+            <div class="pits-container">
+                <!-- AI Row (Top) - Pits 0-5 -->
+                <div class="pit-row" id="ai-row">
+                    <div class="pit ai-side" data-pit="5" id="pit-5">
+                        <div class="seeds" id="seeds-5"></div>
+                    </div>
+                    <div class="pit ai-side" data-pit="4" id="pit-4">
+                        <div class="seeds" id="seeds-4"></div>
+                    </div>
+                    <div class="pit ai-side" data-pit="3" id="pit-3">
+                        <div class="seeds" id="seeds-3"></div>
+                    </div>
+                    <div class="pit ai-side" data-pit="2" id="pit-2">
+                        <div class="seeds" id="seeds-2"></div>
+                    </div>
+                    <div class="pit ai-side" data-pit="1" id="pit-1">
+                        <div class="seeds" id="seeds-1"></div>
+                    </div>
+                    <div class="pit ai-side" data-pit="0" id="pit-0">
+                        <div class="seeds" id="seeds-0"></div>
+                    </div>
+                </div>
+                
+                <!-- Human Row (Bottom) - Pits 6-11 -->
+                <div class="pit-row" id="human-row">
+                    <div class="pit human-side selectable" data-pit="6" id="pit-6">
+                        <div class="seeds" id="seeds-6"></div>
+                    </div>
+                    <div class="pit human-side selectable" data-pit="7" id="pit-7">
+                        <div class="seeds" id="seeds-7"></div>
+                    </div>
+                    <div class="pit human-side selectable" data-pit="8" id="pit-8">
+                        <div class="seeds" id="seeds-8"></div>
+                    </div>
+                    <div class="pit human-side selectable" data-pit="9" id="pit-9">
+                        <div class="seeds" id="seeds-9"></div>
+                    </div>
+                    <div class="pit human-side selectable" data-pit="10" id="pit-10">
+                        <div class="seeds" id="seeds-10"></div>
+                    </div>
+                    <div class="pit human-side selectable" data-pit="11" id="pit-11">
+                        <div class="seeds" id="seeds-11"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Human Store (Right) -->
+            <div class="store right" id="store-human">
+                <div class="seeds" id="seeds-store-human"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-button" onclick="newGame()">🔄 New Game</button>
+            <button class="control-button secondary" onclick="showRules()">📜 Rules</button>
+            <button class="control-button secondary" id="soundToggle" onclick="toggleSound()">🔊 Sound On</button>
+        </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div class="win-modal" id="winModal">
+        <div class="win-content">
+            <h2 class="win-title" id="winTitle">Victory!</h2>
+            <p class="win-message" id="winMessage">The ancient spirits smile upon your wisdom!</p>
+            <br>
+            <button class="control-button" onclick="newGame(); closeWinModal();">Play Again</button>
+            <button class="control-button secondary" onclick="backToMenu();">Back to Games</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            board: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], // Pits 0-11 (AI: 0-5, Human: 6-11)
+            stores: [0, 0], // [AI store, Human store]
+            currentPlayer: 'human', // 'human' or 'ai'
+            gameOver: false,
+            soundEnabled: true,
+            isMoving: false
+        };
+
+        // Store indices
+        const AI_STORE = 0;
+        const HUMAN_STORE = 1;
+
+        function backToMenu() {
+            window.location.href = 'index.html';
+        }
+
+        function initializeGame() {
+            // Reset game state
+            gameState.board = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4];
+            gameState.stores = [0, 0];
+            gameState.currentPlayer = 'human';
+            gameState.gameOver = false;
+            gameState.isMoving = false;
+            
+            updateDisplay();
+            updateGameStatus();
+            createTribalDecorations();
+        }
+
+        function createTribalDecorations() {
+            const decorations = document.getElementById('tribalDecorations');
+            decorations.innerHTML = '';
+            
+            // Add floating tribal symbols
+            const symbols = ['🌿', '🏺', '🦁', '🌴', '☀️', '🌙', '⭐', '🔥'];
+            
+            for (let i = 0; i < 12; i++) {
+                const symbol = document.createElement('div');
+                symbol.className = 'tribal-symbol';
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.left = Math.random() * 100 + '%';
+                symbol.style.top = Math.random() * 100 + '%';
+                symbol.style.animationDelay = Math.random() * 8 + 's';
+                symbol.style.animationDuration = (6 + Math.random() * 4) + 's';
+                decorations.appendChild(symbol);
+            }
+        }
+
+        function updateDisplay() {
+            // Update pit displays
+            for (let i = 0; i < 12; i++) {
+                updatePitDisplay(i, gameState.board[i]);
+            }
+            
+            // Update store displays
+            updateStoreDisplay('ai', gameState.stores[AI_STORE]);
+            updateStoreDisplay('human', gameState.stores[HUMAN_STORE]);
+            
+            // Update scores
+            document.getElementById('aiScore').textContent = gameState.stores[AI_STORE];
+            document.getElementById('humanScore').textContent = gameState.stores[HUMAN_STORE];
+            
+            // Update pit selectability
+            updatePitSelectability();
+        }
+
+        function updatePitDisplay(pitIndex, seedCount) {
+            const seedsContainer = document.getElementById(`seeds-${pitIndex}`);
+            seedsContainer.innerHTML = '';
+            
+            const seedColors = ['light-blue', 'medium-blue', 'dark-blue', 'deep-blue'];
+            
+            // Get pit dimensions for random positioning (responsive)
+            const isMobile = window.innerWidth <= 768;
+            const isSmallMobile = window.innerWidth <= 480;
+            
+            let pitSize, seedSize;
+            if (isSmallMobile) {
+                pitSize = 40;
+                seedSize = 12;
+            } else if (isMobile) {
+                pitSize = 50;
+                seedSize = 16;
+            } else {
+                pitSize = 65;
+                seedSize = 24;
+            }
+            
+            const maxOffset = (pitSize - seedSize) / 2 - 3; // Leave some margin
+            
+            for (let i = 0; i < seedCount; i++) {
+                const seed = document.createElement('div');
+                seed.className = `seed ${seedColors[i % seedColors.length]}`;
+                
+                // Random positioning within the pit for natural jumbled look
+                const randomX = (Math.random() - 0.5) * maxOffset;
+                const randomY = (Math.random() - 0.5) * maxOffset;
+                const randomRotation = Math.random() * 360;
+                
+                seed.style.left = `calc(50% + ${randomX}px)`;
+                seed.style.top = `calc(50% + ${randomY}px)`;
+                seed.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
+                seed.style.zIndex = i; // Layer seeds naturally
+                
+                seedsContainer.appendChild(seed);
+            }
+        }
+
+        function updateStoreDisplay(player, seedCount) {
+            const seedsContainer = document.getElementById(`seeds-store-${player}`);
+            seedsContainer.innerHTML = '';
+            
+            // Show count as number for stores
+            const countDisplay = document.createElement('div');
+            countDisplay.style.fontSize = '2rem';
+            countDisplay.style.fontWeight = 'bold';
+            countDisplay.style.color = '#2F1B14';
+            countDisplay.textContent = seedCount;
+            seedsContainer.appendChild(countDisplay);
+        }
+
+        function updatePitSelectability() {
+            const humanPits = document.querySelectorAll('.human-side');
+            const aiPits = document.querySelectorAll('.ai-side');
+            
+            // Remove all selectability
+            document.querySelectorAll('.pit').forEach(pit => {
+                pit.classList.remove('selectable');
+                pit.style.cursor = 'not-allowed';
+            });
+            
+            if (gameState.gameOver || gameState.isMoving) return;
+            
+            if (gameState.currentPlayer === 'human') {
+                humanPits.forEach(pit => {
+                    const pitIndex = parseInt(pit.dataset.pit);
+                    if (gameState.board[pitIndex] > 0) {
+                        pit.classList.add('selectable');
+                        pit.style.cursor = 'pointer';
+                    }
+                });
+            }
+        }
+
+        function updateGameStatus() {
+            const status = document.getElementById('gameStatus');
+            
+            if (gameState.gameOver) return;
+            
+            if (gameState.isMoving) {
+                status.textContent = '🌱 Watch the seeds flow around the sacred board...';
+                return;
+            }
+            
+            if (gameState.currentPlayer === 'human') {
+                status.textContent = 'Your turn! Click on any pit with seeds to begin sowing.';
+                status.style.color = '#B22222';
+            } else {
+                status.textContent = 'AI is contemplating the ancient wisdom... 🤔';
+                status.style.color = '#228B22';
+            }
+        }
+
+        // Add click handlers to pits
+        document.addEventListener('DOMContentLoaded', () => {
+            for (let i = 6; i <= 11; i++) {
+                document.getElementById(`pit-${i}`).addEventListener('click', () => {
+                    if (gameState.currentPlayer === 'human' && !gameState.gameOver && !gameState.isMoving) {
+                        makeMove(i);
+                    }
+                });
+            }
+            
+            initializeGame();
+        });
+
+        function makeMove(pitIndex) {
+            if (gameState.board[pitIndex] === 0) return;
+            
+            gameState.isMoving = true;
+            updateGameStatus();
+            
+            // Start animated sowing
+            animatedSowing(pitIndex, gameState.currentPlayer);
+        }
+
+        function animatedSowing(startPit, player) {
+            const seedsToSow = gameState.board[startPit];
+            gameState.board[startPit] = 0;
+            updatePitDisplay(startPit, 0); // Clear starting pit immediately
+            
+            let currentPit = startPit;
+            let seedsSown = 0;
+            let lastPit = null;
+            
+            function sowNextSeed() {
+                if (seedsSown >= seedsToSow) {
+                    // Sowing complete - handle captures and end turn
+                    finalizeSowing(lastPit, player);
+                    return;
+                }
+                
+                // Get next pit
+                currentPit = getNextPit(currentPit, player);
+                lastPit = currentPit;
+                
+                // Add seed to current position
+                if (currentPit === 'store') {
+                    if (player === 'human') {
+                        gameState.stores[HUMAN_STORE]++;
+                        updateStoreDisplay('human', gameState.stores[HUMAN_STORE]);
+                        highlightElement('store-human');
+                    } else {
+                        gameState.stores[AI_STORE]++;
+                        updateStoreDisplay('ai', gameState.stores[AI_STORE]);
+                        highlightElement('store-ai');
+                    }
+                } else {
+                    gameState.board[currentPit]++;
+                    updatePitDisplay(currentPit, gameState.board[currentPit]);
+                    highlightElement(`pit-${currentPit}`);
+                }
+                
+                // Play individual seed sound for both human and AI
+                if (gameState.soundEnabled) {
+                    playSound('seed_drop');
+                }
+                
+                seedsSown++;
+                
+                // Continue with next seed after delay
+                setTimeout(sowNextSeed, 400);
+            }
+            
+            // Start sowing sequence
+            setTimeout(sowNextSeed, 200);
+        }
+
+        function highlightElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.classList.add('sowing-highlight');
+                setTimeout(() => {
+                    element.classList.remove('sowing-highlight');
+                }, 300);
+            }
+        }
+
+        function finalizeSowing(lastPit, player) {
+            let extraTurn = false;
+            
+            // Check for extra turn (landed in store)
+            if (lastPit === 'store') {
+                extraTurn = true;
+                playSound('extra_turn');
+            }
+            
+            // Check for capture
+            if (lastPit !== 'store' && !extraTurn) {
+                const captured = checkCapture(lastPit, player);
+                if (captured) {
+                    // Update displays after capture
+                    updatePitDisplay(lastPit, gameState.board[lastPit]);
+                    const oppositePit = 12 - lastPit - 1;
+                    updatePitDisplay(oppositePit, gameState.board[oppositePit]);
+                    
+                    if (player === 'human') {
+                        updateStoreDisplay('human', gameState.stores[HUMAN_STORE]);
+                    } else {
+                        updateStoreDisplay('ai', gameState.stores[AI_STORE]);
+                    }
+                }
+            }
+            
+            gameState.isMoving = false;
+            updateDisplay();
+            
+            // Handle turn continuation or switching
+            if (extraTurn && !gameState.gameOver) {
+                updateGameStatus();
+            } else if (!gameState.gameOver) {
+                switchPlayer();
+            }
+            
+            // Check for game end
+            if (checkGameEnd()) {
+                return;
+            }
+            
+            // AI turn
+            if (gameState.currentPlayer === 'ai' && !gameState.gameOver) {
+                setTimeout(() => makeAIMove(), 800);
+            }
+        }
+
+        function getNextPit(currentPit, player) {
+            if (currentPit === 'store') {
+                // From player's store, continue to opposite side
+                return player === 'human' ? 0 : 6;
+            }
+            
+            // Counter-clockwise movement: 6→7→8→9→10→11→Human Store→0→1→2→3→4→5→AI Store→6...
+            currentPit++;
+            
+            if (currentPit === 6) {
+                // Moving from AI pit 5 to next position
+                if (player === 'ai') {
+                    return 'store'; // AI reaches their store
+                } else {
+                    return 6; // Human skips AI store, goes to pit 6
+                }
+            }
+            
+            if (currentPit === 12) {
+                // Moving from human pit 11 to next position  
+                if (player === 'human') {
+                    return 'store'; // Human reaches their store
+                } else {
+                    return 0; // AI skips human store, wraps to pit 0
+                }
+            }
+            
+            return currentPit;
+        }
+
+        function checkCapture(lastPit, player) {
+            // Check if landed in empty pit on player's side
+            const isPlayerSide = (player === 'human' && lastPit >= 6 && lastPit <= 11) ||
+                                 (player === 'ai' && lastPit >= 0 && lastPit <= 5);
+            
+            if (isPlayerSide && gameState.board[lastPit] === 1) {
+                const oppositePit = 12 - lastPit - 1;
+                const opponentSeeds = gameState.board[oppositePit];
+                
+                if (opponentSeeds > 0) {
+                    // Capture seeds
+                    const totalCapture = gameState.board[lastPit] + opponentSeeds;
+                    gameState.board[lastPit] = 0;
+                    gameState.board[oppositePit] = 0;
+                    
+                    if (player === 'human') {
+                        gameState.stores[HUMAN_STORE] += totalCapture;
+                    } else {
+                        gameState.stores[AI_STORE] += totalCapture;
+                    }
+                    
+                    playSound('capture');
+                    return true; // Capture occurred
+                }
+            }
+            
+            return false; // No capture
+        }
+
+        function switchPlayer() {
+            gameState.currentPlayer = gameState.currentPlayer === 'human' ? 'ai' : 'human';
+            gameState.isMoving = false;
+            updateGameStatus();
+            updateDisplay();
+        }
+
+        function makeAIMove() {
+            gameState.isMoving = true;
+            updateGameStatus();
+            
+            const bestMove = findBestMove();
+            
+            setTimeout(() => {
+                if (bestMove !== -1) {
+                    animatedSowing(bestMove, 'ai');
+                }
+            }, 500);
+        }
+
+        function findBestMove() {
+            const availableMoves = [];
+            for (let i = 0; i <= 5; i++) {
+                if (gameState.board[i] > 0) {
+                    availableMoves.push(i);
+                }
+            }
+            
+            if (availableMoves.length === 0) return -1;
+            
+            // Strategic AI - always use best move
+            let bestMove = availableMoves[0];
+            let bestScore = -Infinity;
+            
+            for (const move of availableMoves) {
+                const score = evaluateMove(move, 'ai');
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMove = move;
+                }
+            }
+            
+            return bestMove;
+        }
+
+        function wouldCapture(pitIndex, player) {
+            const seeds = gameState.board[pitIndex];
+            let currentPit = pitIndex;
+            
+            // Simulate sowing
+            for (let i = 0; i < seeds; i++) {
+                currentPit = getNextPit(currentPit, player);
+            }
+            
+            if (currentPit !== 'store') {
+                const isPlayerSide = (player === 'human' && currentPit >= 6 && currentPit <= 11) ||
+                                     (player === 'ai' && currentPit >= 0 && currentPit <= 5);
+                
+                if (isPlayerSide && gameState.board[currentPit] === 0) {
+                    const oppositePit = 12 - currentPit - 1;
+                    return gameState.board[oppositePit] > 0;
+                }
+            }
+            
+            return false;
+        }
+
+        function evaluateMove(pitIndex, player) {
+            let score = 0;
+            
+            // Prefer moves that give extra turns
+            const seeds = gameState.board[pitIndex];
+            let currentPit = pitIndex;
+            
+            for (let i = 0; i < seeds; i++) {
+                currentPit = getNextPit(currentPit, player);
+            }
+            
+            if (currentPit === 'store') {
+                score += 20; // Extra turn bonus
+            }
+            
+            // Prefer captures
+            if (wouldCapture(pitIndex, player)) {
+                const oppositePit = 12 - currentPit - 1;
+                score += gameState.board[oppositePit] * 5;
+            }
+            
+            // Prefer moves that put more seeds in store
+            score += seeds * 2;
+            
+            return score;
+        }
+
+        function checkGameEnd() {
+            const humanSide = gameState.board.slice(6, 12);
+            const aiSide = gameState.board.slice(0, 6);
+            
+            const humanHasSeeds = humanSide.some(seeds => seeds > 0);
+            const aiHasSeeds = aiSide.some(seeds => seeds > 0);
+            
+            if (!humanHasSeeds || !aiHasSeeds) {
+                // Game ends - collect remaining seeds
+                const humanRemaining = humanSide.reduce((a, b) => a + b, 0);
+                const aiRemaining = aiSide.reduce((a, b) => a + b, 0);
+                
+                gameState.stores[HUMAN_STORE] += humanRemaining;
+                gameState.stores[AI_STORE] += aiRemaining;
+                
+                // Clear the board
+                for (let i = 0; i < 12; i++) {
+                    gameState.board[i] = 0;
+                }
+                
+                gameState.gameOver = true;
+                gameState.isMoving = false;
+                
+                updateDisplay();
+                
+                // Determine winner
+                setTimeout(() => {
+                    const humanScore = gameState.stores[HUMAN_STORE];
+                    const aiScore = gameState.stores[AI_STORE];
+                    
+                    if (humanScore > aiScore) {
+                        showWinModal('🎉 Victory! 🎉', `You harvested ${humanScore} seeds! The ancestors celebrate your wisdom!`);
+                        playSound('victory');
+                    } else if (aiScore > humanScore) {
+                        showWinModal('🤖 AI Wins!', `The AI harvested ${aiScore} seeds. The spirits favor the machine this time.`);
+                        playSound('defeat');
+                    } else {
+                        showWinModal('🤝 Ancient Tie!', `Both players harvested ${humanScore} seeds. The spirits declare a balanced harvest!`);
+                        playSound('tie');
+                    }
+                }, 1000);
+                
+                return true;
+            }
+            
+            return false;
+        }
+
+        function playSound(type) {
+            if (!gameState.soundEnabled) return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Resume audio context if suspended (common after user interaction pause)
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                
+                switch (type) {
+                    case 'seed_drop':
+                        // Individual seed drop sound - higher pitch, shorter duration
+                        playTone(audioContext, 400 + Math.random() * 200, 0.1, 'sine');
+                        break;
+                    case 'sow':
+                        // Legacy sowing sound (kept for compatibility)
+                        [200, 250, 300].forEach((freq, i) => {
+                            setTimeout(() => {
+                                playTone(audioContext, freq, 0.15, 'sine');
+                            }, i * 100);
+                        });
+                        break;
+                    case 'capture':
+                        // Capture sound - deeper tones
+                        [300, 200, 150].forEach((freq, i) => {
+                            setTimeout(() => {
+                                playTone(audioContext, freq, 0.2, 'triangle');
+                            }, i * 80);
+                        });
+                        break;
+                    case 'extra_turn':
+                        // Happy extra turn sound
+                        [400, 500, 600, 700].forEach((freq, i) => {
+                            setTimeout(() => {
+                                playTone(audioContext, freq, 0.1, 'sine');
+                            }, i * 60);
+                        });
+                        break;
+                    case 'victory':
+                        // African-inspired victory celebration
+                        [220, 293, 369, 440, 554].forEach((freq, i) => {
+                            setTimeout(() => {
+                                playTone(audioContext, freq, 0.4, 'sine');
+                            }, i * 200);
+                        });
+                        break;
+                    case 'defeat':
+                        // Gentle defeat sound
+                        [400, 350, 300, 250].forEach((freq, i) => {
+                            setTimeout(() => {
+                                playTone(audioContext, freq, 0.3, 'sawtooth');
+                            }, i * 150);
+                        });
+                        break;
+                    case 'tie':
+                        // Balanced tie sound
+                        playTone(audioContext, 440, 0.8, 'sine');
+                        break;
+                }
+            } catch (error) {
+                console.log('Sound system error:', error);
+            }
+        }
+
+        function playTone(audioContext, frequency, duration, type = 'sine') {
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = type;
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (error) {
+                console.log('Audio context issue:', error);
+            }
+        }
+
+        function showWinModal(title, message) {
+            document.getElementById('winTitle').textContent = title;
+            document.getElementById('winMessage').textContent = message;
+            document.getElementById('winModal').style.display = 'flex';
+            
+            // Add celebration seeds
+            setTimeout(createCelebrationSeeds, 200);
+        }
+
+        function createCelebrationSeeds() {
+            const modal = document.getElementById('winModal');
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const seed = document.createElement('div');
+                    seed.className = 'celebration-seeds';
+                    seed.style.left = Math.random() * 100 + '%';
+                    seed.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    seed.style.animationDelay = Math.random() * 1 + 's';
+                    
+                    modal.appendChild(seed);
+                    
+                    setTimeout(() => {
+                        if (seed.parentNode) {
+                            seed.parentNode.removeChild(seed);
+                        }
+                    }, 5000);
+                }, i * 100);
+            }
+        }
+
+        function closeWinModal() {
+            document.getElementById('winModal').style.display = 'none';
+        }
+
+        function newGame() {
+            closeWinModal();
+            initializeGame();
+        }
+
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            const button = document.getElementById('soundToggle');
+            button.textContent = gameState.soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
+        }
+
+        function showRules() {
+            alert(`🌍 MANKALA RULES 🌍
+
+🎯 OBJECTIVE: Capture more seeds than your opponent
+
+🎮 HOW TO PLAY:
+• Click any pit on your side with seeds to sow them
+• Seeds are sown counter-clockwise, one by one
+• Include your own store, but skip opponent's store
+• If your last seed lands in your store, take another turn
+• If your last seed lands in an empty pit on your side, capture all seeds from the opposite pit
+
+🏆 WINNING:
+• Game ends when one side is completely empty
+• Remaining seeds go to the player who still has seeds
+• Player with the most seeds in their store wins!
+
+🎵 Watch the beautiful animation as seeds flow around the board!
+🌱 May the ancestors guide your strategy!`);
+        }
+    </script>
+</body>
+</html>
